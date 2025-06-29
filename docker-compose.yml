@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: flights-db
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flights-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flights-app
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    networks:
+      - flights-network
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  flights-network:
+    driver: bridge
