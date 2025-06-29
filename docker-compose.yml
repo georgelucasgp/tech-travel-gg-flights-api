@@ -1,5 +1,5 @@
 services:
-  postgres:
+  db:
     image: postgres:15-alpine
     container_name: flights-db
     env_file:
@@ -7,7 +7,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     networks:
       - flights-network
     restart: unless-stopped
@@ -29,11 +29,11 @@ services:
       - flights-network
     restart: unless-stopped
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
 
 volumes:
-  postgres_data:
+  db_data:
     driver: local
 
 networks:
