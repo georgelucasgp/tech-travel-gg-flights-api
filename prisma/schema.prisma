@@ -1,0 +1,127 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma/client"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  PENDING
+}
+
+model Airline {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  iataCode  String    @unique @map("iata_code") @db.VarChar(3)
+  icaoCode  String    @unique @map("icao_code") @db.VarChar(3)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  flights Flight[]
+
+  @@index([iataCode])
+  @@index([icaoCode])
+  @@map("airlines")
+}
+
+model Airport {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  iataCode  String    @unique @map("iata_code") @db.VarChar(3)
+  icaoCode  String    @unique @map("icao_code") @db.VarChar(4)
+  city      String    @db.VarChar(100)
+  country   String    @db.VarChar(100)
+  timezone  String?   @db.VarChar(50)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  originFlights      Flight[] @relation("OriginAirport")
+  destinationFlights Flight[] @relation("DestinationAirport")
+
+  @@index([iataCode])
+  @@index([icaoCode])
+  @@index([city])
+  @@index([country])
+  @@map("airports")
+}
+
+model Flight {
+  id                Int       @id @default(autoincrement())
+  flightNumber      String    @map("flight_number") @db.VarChar(10)
+  airlineId         Int       @map("airline_id")
+  originIata        String    @map("origin_iata") @db.VarChar(3)
+  destinationIata   String    @map("destination_iata") @db.VarChar(3)
+  departureDatetime DateTime  @map("departure_datetime") @db.Timestamptz
+  arrivalDatetime   DateTime  @map("arrival_datetime") @db.Timestamptz
+  frequency         Int[]
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+
+  airline            Airline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+  originAirport      Airport @relation("OriginAirport", fields: [originIata], references: [iataCode])
+  destinationAirport Airport @relation("DestinationAirport", fields: [destinationIata], references: [iataCode])
+
+  itineraryFlights ItineraryFlight[]
+
+  @@index([originIata])
+  @@index([destinationIata])
+  @@index([departureDatetime])
+  @@index([airlineId])
+  @@index([flightNumber])
+  @@index([originIata, destinationIata])
+  @@index([originIata, departureDatetime])
+  @@map("flights")
+}
+
+model Itinerary {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  flights  ItineraryFlight[]
+  bookings Booking[]
+
+  @@map("itineraries")
+}
+
+model ItineraryFlight {
+  id          Int @id @default(autoincrement())
+  itineraryId Int @map("itinerary_id")
+  flightId    Int @map("flight_id")
+  order       Int
+
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  flight    Flight    @relation(fields: [flightId], references: [id], onDelete: Cascade)
+
+  @@unique([itineraryId, flightId])
+  @@unique([itineraryId, order])
+  @@index([itineraryId, order])
+  @@map("itinerary_flights")
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  userId      String        @map("user_id") @db.VarChar(255)
+  itineraryId Int           @map("itinerary_id")
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([userId, status])
+  @@map("bookings")
+}
