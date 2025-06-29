@@ -119,4 +119,39 @@ describe('FlightsService', () => {
       await expect(service.findAll()).rejects.toThrow('Database error');
     });
   });
+
+  describe('findById', () => {
+    it('should return flight when found', async () => {
+      const findByIdSpy = jest
+        .spyOn(mockRepository, 'findById')
+        .mockResolvedValue(mockFlight);
+
+      const result = await service.findById(flightId);
+
+      expect(findByIdSpy).toHaveBeenCalledTimes(1);
+      expect(findByIdSpy).toHaveBeenCalledWith(flightId);
+      expect(result).toBe(mockFlight);
+    });
+
+    it('should return null when flight not found', async () => {
+      const findByIdSpy = jest
+        .spyOn(mockRepository, 'findById')
+        .mockResolvedValue(null);
+
+      const result = await service.findById(flightId);
+
+      expect(findByIdSpy).toHaveBeenCalledTimes(1);
+      expect(findByIdSpy).toHaveBeenCalledWith(flightId);
+      expect(result).toBeNull();
+    });
+
+    it('should throw error when repository fails', async () => {
+      const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'findById').mockRejectedValue(error);
+
+      await expect(service.findById(flightId)).rejects.toThrow(
+        'Database error',
+      );
+    });
+  });
 });

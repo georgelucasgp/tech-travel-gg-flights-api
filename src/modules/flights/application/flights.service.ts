@@ -18,4 +18,8 @@ export class FlightsService {
   async findAll(): Promise<Flight[]> {
     return await this.flightRepository.findAll();
   }
+
+  async findById(id: string): Promise<Flight | null> {
+    return await this.flightRepository.findById(id);
+  }
 }
