@@ -14,4 +14,8 @@ export class FlightsService {
     const flight = Flight.create(createDto);
     return await this.flightRepository.create(flight);
   }
+
+  async findAll(): Promise<Flight[]> {
+    return await this.flightRepository.findAll();
+  }
 }

@@ -87,4 +87,36 @@ describe('FlightsService', () => {
       expect(createSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('findAll', () => {
+    it('should return all flights', async () => {
+      const flights = [mockFlight];
+      const findAllSpy = jest
+        .spyOn(mockRepository, 'findAll')
+        .mockResolvedValue(flights);
+
+      const result = await service.findAll();
+
+      expect(findAllSpy).toHaveBeenCalledTimes(1);
+      expect(result).toBe(flights);
+    });
+
+    it('should return empty array when no flights exist', async () => {
+      const findAllSpy = jest
+        .spyOn(mockRepository, 'findAll')
+        .mockResolvedValue([]);
+
+      const result = await service.findAll();
+
+      expect(findAllSpy).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([]);
+    });
+
+    it('should throw error when repository fails', async () => {
+      const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'findAll').mockRejectedValue(error);
+
+      await expect(service.findAll()).rejects.toThrow('Database error');
+    });
+  });
 });
