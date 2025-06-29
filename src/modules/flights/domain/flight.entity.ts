@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { validate as isUuid } from 'uuid';
 
 const FLIGHT_NUMBER_REGEX = /^[A-Z]{2}\d{3,4}$/;
 const IATA_CODE_REGEX = /^[A-Z]{3}$/;
@@ -30,6 +31,10 @@ export class Flight {
   }
 
   public static create(props: FlightProps, id?: string): Flight {
+    if (id && !isUuid(id)) {
+      throw new Error('Invalid UUID format for id');
+    }
+
     if (
       !props.flightNumber ||
       !props.airlineId ||
