@@ -16,7 +16,7 @@ enum BookingStatus {
 }
 
 model Airline {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   name      String    @db.VarChar(255)
   iataCode  String    @unique @map("iata_code") @db.VarChar(3)
   icaoCode  String    @unique @map("icao_code") @db.VarChar(3)
@@ -32,7 +32,7 @@ model Airline {
 }
 
 model Airport {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   name      String    @db.VarChar(255)
   iataCode  String    @unique @map("iata_code") @db.VarChar(3)
   icaoCode  String    @unique @map("icao_code") @db.VarChar(4)
@@ -54,9 +54,9 @@ model Airport {
 }
 
 model Flight {
-  id                Int       @id @default(autoincrement())
+  id                String    @id @default(uuid())
   flightNumber      String    @map("flight_number") @db.VarChar(10)
-  airlineId         Int       @map("airline_id")
+  airlineId         String    @map("airline_id")
   originIata        String    @map("origin_iata") @db.VarChar(3)
   destinationIata   String    @map("destination_iata") @db.VarChar(3)
   departureDatetime DateTime  @map("departure_datetime") @db.Timestamptz
@@ -83,7 +83,7 @@ model Flight {
 }
 
 model Itinerary {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -95,9 +95,9 @@ model Itinerary {
 }
 
 model ItineraryFlight {
-  id          Int @id @default(autoincrement())
-  itineraryId Int @map("itinerary_id")
-  flightId    Int @map("flight_id")
+  id          String @id @default(uuid())
+  itineraryId String @map("itinerary_id")
+  flightId    String @map("flight_id")
   order       Int
 
   itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
@@ -110,9 +110,9 @@ model ItineraryFlight {
 }
 
 model Booking {
-  id          Int           @id @default(autoincrement())
+  id          String        @id @default(uuid())
   userId      String        @map("user_id") @db.VarChar(255)
-  itineraryId Int           @map("itinerary_id")
+  itineraryId String        @map("itinerary_id")
   status      BookingStatus @default(PENDING)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
