@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Flight } from '../domain/flight.entity';
-import { IFlightRepository } from '../domain/flight.repository';
+import { Flight } from '../domain/entities/flight.entity';
+import { IFlightRepository } from '../domain/repositories/flight.repository';
 import { CreateFlightDto } from '../presentation/dto/create-flight.dto';
 import { FlightsService } from './flights.service';
 import { randomUUID } from 'crypto';
@@ -22,14 +22,13 @@ describe('FlightsService', () => {
     frequency: [1, 2, 3],
   };
 
-  const mockFlight = Flight.create(mockFlightData, flightId);
+  const mockFlight = Flight.create({ ...mockFlightData, id: flightId });
 
   beforeEach(async () => {
     const mockRepositoryFactory = (): jest.Mocked<IFlightRepository> => ({
       create: jest.fn(),
       findAll: jest.fn(),
       findById: jest.fn(),
-      update: jest.fn(),
       delete: jest.fn(),
     });
 
@@ -152,6 +151,26 @@ describe('FlightsService', () => {
       await expect(service.findById(flightId)).rejects.toThrow(
         'Database error',
       );
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete flight successfully', async () => {
+      const deleteSpy = jest
+        .spyOn(mockRepository, 'delete')
+        .mockResolvedValue();
+
+      await service.delete(flightId);
+
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+      expect(deleteSpy).toHaveBeenCalledWith(flightId);
+    });
+
+    it('should throw error when repository fails', async () => {
+      const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'delete').mockRejectedValue(error);
+
+      await expect(service.delete(flightId)).rejects.toThrow('Database error');
     });
   });
 });
