@@ -8,10 +8,10 @@ describe('FlightNumber Value Object', () => {
 
   it('should throw error for invalid format', () => {
     expect(() => new FlightNumber('123')).toThrow(
-      'Flight number must start with airline code letters',
+      'Invalid flight number format. Use 2 letters followed by 2-4 digits (ex: LA3456).',
     );
     expect(() => new FlightNumber('LATAM123')).toThrow(
-      'Flight number format is invalid',
+      'Invalid flight number format. Use 2 letters followed by 2-4 digits (ex: LA3456).',
     );
   });
 

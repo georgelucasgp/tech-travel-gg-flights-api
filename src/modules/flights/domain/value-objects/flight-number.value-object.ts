@@ -12,7 +12,7 @@ export class FlightNumber {
 
     if (!FlightNumber.FLIGHT_NUMBER_REGEX.test(value)) {
       throw new Error(
-        'Flight number must follow format: 2 letters + 2-4 digits (e.g., LA3456)',
+        'Invalid flight number format. Use 2 letters followed by 2-4 digits (ex: LA3456).',
       );
     }
   }
