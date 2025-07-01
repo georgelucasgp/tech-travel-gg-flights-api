@@ -11,6 +11,9 @@ export interface FlightProps {
   departureDatetime: Date;
   arrivalDatetime: Date;
   frequency: number[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date | null;
 }
 
 export class Flight {
@@ -23,6 +26,9 @@ export class Flight {
     private readonly _departureDatetime: Date,
     private readonly _arrivalDatetime: Date,
     private readonly _frequency: Frequency,
+    private readonly _createdAt: Date,
+    private readonly _updatedAt: Date,
+    private readonly _deletedAt: Date | null,
   ) {}
 
   static create(props: FlightProps): Flight {
@@ -45,6 +51,9 @@ export class Flight {
       props.departureDatetime,
       props.arrivalDatetime,
       new Frequency(props.frequency),
+      props.createdAt ?? new Date(),
+      props.updatedAt ?? new Date(),
+      props.deletedAt ?? null,
     );
   }
 
@@ -78,6 +87,18 @@ export class Flight {
 
   get frequency(): Frequency {
     return this._frequency;
+  }
+
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
+
+  get deletedAt(): Date | null {
+    return this._deletedAt;
   }
 
   equals(other: Flight): boolean {

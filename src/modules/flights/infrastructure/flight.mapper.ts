@@ -9,6 +9,9 @@ type PrismaFlightData = {
   departureDatetime: Date;
   arrivalDatetime: Date;
   frequency: number[];
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 };
 
 export class FlightMapper {
@@ -22,6 +25,9 @@ export class FlightMapper {
       departureDatetime: prismaFlight.departureDatetime,
       arrivalDatetime: prismaFlight.arrivalDatetime,
       frequency: prismaFlight.frequency,
+      createdAt: prismaFlight.createdAt,
+      updatedAt: prismaFlight.updatedAt,
+      deletedAt: prismaFlight.deletedAt,
     });
   }
 
@@ -35,6 +41,9 @@ export class FlightMapper {
       departureDatetime: flight.departureDatetime,
       arrivalDatetime: flight.arrivalDatetime,
       frequency: flight.frequency.getValue(),
+      createdAt: flight.createdAt,
+      updatedAt: flight.updatedAt,
+      deletedAt: flight.deletedAt,
     };
   }
 }
