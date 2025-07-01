@@ -5,5 +5,7 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "testPathIgnorePatterns": ["/node_modules/", ".*\\.integration\\.spec\\.ts$"],
+  "verbose": false
 }
