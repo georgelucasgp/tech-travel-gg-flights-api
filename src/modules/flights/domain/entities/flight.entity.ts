@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { IataCode, FlightNumber, Frequency, FlightId } from '../value-objects';
+import { BadRequestException } from '@nestjs/common';
 
 export interface FlightProps {
   id?: string;
@@ -26,7 +27,9 @@ export class Flight {
 
   static create(props: FlightProps): Flight {
     if (props.arrivalDatetime <= props.departureDatetime) {
-      throw new Error('Arrival datetime must be after departure datetime');
+      throw new BadRequestException(
+        'Arrival datetime must be after departure datetime',
+      );
     }
 
     const flightId = props.id

@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 export class Frequency {
   private static readonly VALID_DAYS = [0, 1, 2, 3, 4, 5, 6];
   constructor(private readonly days: number[]) {
@@ -6,19 +8,19 @@ export class Frequency {
 
   private validate(days: number[]): void {
     if (!Array.isArray(days) || days.length === 0) {
-      throw new Error('Frequency must contain at least one day');
+      throw new BadRequestException('Frequency must contain at least one day');
     }
 
     const uniqueDays = [...new Set(days)];
     if (uniqueDays.length !== days.length) {
-      throw new Error('Frequency cannot contain duplicate days');
+      throw new BadRequestException('Frequency cannot contain duplicate days');
     }
 
     const invalidDays = days.filter(
       (day) => !Frequency.VALID_DAYS.includes(day),
     );
     if (invalidDays.length > 0) {
-      throw new Error(
+      throw new BadRequestException(
         `Invalid days: ${invalidDays.join(', ')}. Days must be 0-6 (Sunday=0, Saturday=6)`,
       );
     }

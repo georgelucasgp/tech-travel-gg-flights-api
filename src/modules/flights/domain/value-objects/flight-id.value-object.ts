@@ -1,9 +1,10 @@
+import { BadRequestException } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 
 export class FlightId {
   constructor(private readonly value: string) {
     if (!uuidValidate(value)) {
-      throw new Error('Flight ID must be a valid UUID');
+      throw new BadRequestException('Flight ID must be a valid UUID');
     }
   }
 
