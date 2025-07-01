@@ -122,7 +122,7 @@ describe('FlightsController (e2e)', () => {
     it('should reject invalid frequency values', async () => {
       const createFlightDto = {
         ...getValidCreateFlightDto(),
-        frequency: [1, 8], // 8 is invalid (should be 0-6)
+        frequency: [1, 8],
       };
 
       await request(app.getHttpServer())
@@ -134,8 +134,7 @@ describe('FlightsController (e2e)', () => {
 
   describe('GET /flights', () => {
     beforeEach(async () => {
-      // Create test flights with different routes for filtering tests
-      const flight1 = getValidCreateFlightDto(); // IMP -> BSB
+      const flight1 = getValidCreateFlightDto();
       const flight2 = {
         ...getValidCreateFlightDto(),
         flightNumber: 'LA7890',
@@ -250,7 +249,6 @@ describe('FlightsController (e2e)', () => {
         .delete(`/flights/${flightId}`)
         .expect(204);
 
-      // Verify flight is not returned in list
       const response = await request(app.getHttpServer())
         .get('/flights')
         .expect(200);

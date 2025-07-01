@@ -5,13 +5,13 @@
   "testEnvironment": "node",
   "testRegex": ".*\\.integration\\.spec\\.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.ts$": "ts-jest"
   },
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/$1"
   },
   "testPathIgnorePatterns": ["/node_modules/", ".*\\.e2e\\.spec\\.ts$"],
-  "collectCoverageFrom": ["**/*.(t|j)s"],
+  "collectCoverageFrom": ["**/*.ts"],
   "coverageDirectory": "../coverage-integration",
   "verbose": false
 }

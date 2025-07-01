@@ -4,8 +4,13 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.ts$": "ts-jest"
   },
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/$1"
+  },
+  "collectCoverageFrom": ["**/*.ts"],
+  "coverageDirectory": "../coverage-e2e",
   "testPathIgnorePatterns": ["/node_modules/", ".*\\.integration\\.spec\\.ts$"],
   "verbose": false
 }
