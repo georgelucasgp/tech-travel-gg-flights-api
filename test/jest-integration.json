@@ -1,21 +1,17 @@
 {
-  "displayName": "Unit Tests",
+  "displayName": "Integration Tests",
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "../src",
   "testEnvironment": "node",
-  "testRegex": ".*\\.spec\\.ts$",
-  "testPathIgnorePatterns": [
-    "/node_modules/",
-    ".*\\.integration\\.spec\\.ts$",
-    ".*\\.e2e\\.spec\\.ts$"
-  ],
+  "testRegex": ".*\\.integration\\.spec\\.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/$1"
   },
+  "testPathIgnorePatterns": ["/node_modules/", ".*\\.e2e\\.spec\\.ts$"],
   "collectCoverageFrom": ["**/*.(t|j)s"],
-  "coverageDirectory": "../coverage-unit",
+  "coverageDirectory": "../coverage-integration",
   "verbose": false
 }
