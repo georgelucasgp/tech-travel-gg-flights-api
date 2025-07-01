@@ -39,11 +39,13 @@
     "db:studio": "npx prisma studio"
   },
   "dependencies": {
+    "@fastify/static": "^8.2.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-fastify": "^11.1.3",
+    "@nestjs/swagger": "^11.2.0",
     "@prisma/client": "^6.10.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
