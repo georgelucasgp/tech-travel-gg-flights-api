@@ -94,7 +94,7 @@ describe('FlightsService', () => {
         .spyOn(mockRepository, 'findAll')
         .mockResolvedValue(flights);
 
-      const result = await service.findAll();
+      const result = await service.findAll({});
 
       expect(findAllSpy).toHaveBeenCalledTimes(1);
       expect(result).toBe(flights);
@@ -105,7 +105,7 @@ describe('FlightsService', () => {
         .spyOn(mockRepository, 'findAll')
         .mockResolvedValue([]);
 
-      const result = await service.findAll();
+      const result = await service.findAll({});
 
       expect(findAllSpy).toHaveBeenCalledTimes(1);
       expect(result).toEqual([]);
@@ -115,7 +115,7 @@ describe('FlightsService', () => {
       const error = new Error('Database error');
       jest.spyOn(mockRepository, 'findAll').mockRejectedValue(error);
 
-      await expect(service.findAll()).rejects.toThrow('Database error');
+      await expect(service.findAll({})).rejects.toThrow('Database error');
     });
   });
 

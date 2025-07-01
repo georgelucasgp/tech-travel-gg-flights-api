@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateFlightDto } from '../presentation/dto/create-flight.dto';
 import { IFlightRepository } from '../domain/repositories/flight.repository';
 import { Flight } from '../domain/entities/flight.entity';
+import { FlightQueryDto } from '../presentation/dto/flight-query.dto';
 
 @Injectable()
 export class FlightsService {
@@ -15,8 +16,8 @@ export class FlightsService {
     return await this.flightRepository.create(flight);
   }
 
-  async findAll(): Promise<Flight[]> {
-    return await this.flightRepository.findAll();
+  findAll(query: FlightQueryDto): Promise<Flight[]> {
+    return this.flightRepository.findAll(query);
   }
 
   async findById(id: string): Promise<Flight | null> {
