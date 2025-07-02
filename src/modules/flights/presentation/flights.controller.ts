@@ -10,52 +10,42 @@ import {
   NotFoundException,
   Query,
   ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { FlightsService } from '../application/flights.service';
 import { CreateFlightDto } from './dto/create-flight.dto';
+import { UpdateFlightDto } from './dto/update-flight.dto';
 import { FlightResponseDto } from './dto/flight-response.dto';
 import { FlightQueryDto } from './dto/flight-query.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Flights')
-@Controller('flights')
+@Controller({ path: 'flights', version: '1' })
 export class FlightsController {
   constructor(private readonly flightsService: FlightsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new flight' })
-  @ApiResponse({
-    status: 201,
-    description: 'The flight has been successfully created.',
-    type: FlightResponseDto,
-  })
-  @ApiResponse({ status: 400, description: 'Invalid parameters.' })
-  @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createDto: CreateFlightDto): Promise<FlightResponseDto> {
-    const flight = await this.flightsService.create(createDto);
+  @ApiResponse({ status: 201, description: 'Flight created successfully' })
+  async create(
+    @Body() createFlightDto: CreateFlightDto,
+  ): Promise<FlightResponseDto> {
+    const flight = await this.flightsService.create(createFlightDto);
     return new FlightResponseDto(flight);
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all flights with optional filters' })
-  @ApiResponse({
-    status: 200,
-    description: 'A list of flights.',
-    type: [FlightResponseDto],
-  })
+  @ApiOperation({ summary: 'Get all flights with optional filters' })
+  @ApiResponse({ status: 200, description: 'Flights retrieved successfully' })
   async findAll(@Query() query: FlightQueryDto): Promise<FlightResponseDto[]> {
     const flights = await this.flightsService.findAll(query);
     return flights.map((flight) => new FlightResponseDto(flight));
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Find a specific flight by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The requested flight.',
-    type: FlightResponseDto,
-  })
-  @ApiResponse({ status: 404, description: 'Flight not found.' })
+  @ApiOperation({ summary: 'Get a flight by ID' })
+  @ApiResponse({ status: 200, description: 'Flight retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Flight not found' })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FlightResponseDto> {
@@ -66,19 +56,24 @@ export class FlightsController {
     return new FlightResponseDto(flight);
   }
 
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a flight' })
+  @ApiResponse({ status: 200, description: 'Flight updated successfully' })
+  @ApiResponse({ status: 404, description: 'Flight not found' })
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateFlightDto: UpdateFlightDto,
+  ): Promise<FlightResponseDto> {
+    const flight = await this.flightsService.update(id, updateFlightDto);
+    return new FlightResponseDto(flight);
+  }
+
   @Delete(':id')
-  @ApiOperation({ summary: 'Remove a flight (soft delete)' })
-  @ApiResponse({
-    status: 204,
-    description: 'The flight has been successfully removed.',
-  })
-  @ApiResponse({ status: 404, description: 'Flight not found.' })
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    const flight = await this.flightsService.findById(id);
-    if (!flight) {
-      throw new NotFoundException('Flight not found');
-    }
+  @ApiOperation({ summary: 'Delete a flight' })
+  @ApiResponse({ status: 204, description: 'Flight deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Flight not found' })
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.flightsService.delete(id);
   }
 }

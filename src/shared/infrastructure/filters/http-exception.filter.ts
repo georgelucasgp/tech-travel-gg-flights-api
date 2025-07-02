@@ -13,7 +13,7 @@ interface ErrorResponse {
   timestamp: string;
   path: string;
   method: string;
-  message: string;
+  message: string | string[];
   error?: string;
 }
 
@@ -36,13 +36,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
       method: request?.method || 'unknown',
     });
 
-    let message = exception.message;
+    let message: string | string[] = exception.message;
     let error: string | undefined;
 
     if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
       const responseObj = exceptionResponse as Record<string, unknown>;
-      message = responseObj.message as string;
-      error = responseObj.error as string | undefined;
+
+      if (Array.isArray(responseObj.message)) {
+        message = responseObj.message as string[];
+      } else if (typeof responseObj.message === 'string') {
+        message = responseObj.message;
+      }
+
+      if (typeof responseObj.error === 'string') {
+        error = responseObj.error;
+      }
     }
 
     const errorResponse: ErrorResponse = {
