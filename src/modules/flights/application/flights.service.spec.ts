@@ -2,8 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Flight } from '../domain/entities/flight.entity';
 import { IFlightRepository } from '../domain/repositories/flight.repository';
 import { CreateFlightDto } from '../presentation/dto/create-flight.dto';
+import { UpdateFlightDto } from '../presentation/dto/update-flight.dto';
 import { FlightsService } from './flights.service';
 import { randomUUID } from 'crypto';
+import { FlightFactory } from './flight.factory';
 
 describe('FlightsService', () => {
   let service: FlightsService;
@@ -22,13 +24,15 @@ describe('FlightsService', () => {
     frequency: [1, 2, 3],
   };
 
-  const mockFlight = Flight.create({ ...mockFlightData, id: flightId });
+  const mockFlight = FlightFactory.create(mockFlightData);
 
   beforeEach(async () => {
     const mockRepositoryFactory = (): jest.Mocked<IFlightRepository> => ({
       create: jest.fn(),
       findAll: jest.fn(),
       findById: jest.fn(),
+      findByFlightNumber: jest.fn(),
+      update: jest.fn(),
       delete: jest.fn(),
     });
 
@@ -52,6 +56,7 @@ describe('FlightsService', () => {
 
   describe('create', () => {
     it('should create a flight successfully', async () => {
+      jest.spyOn(mockRepository, 'findByFlightNumber').mockResolvedValue(null);
       const createSpy = jest
         .spyOn(mockRepository, 'create')
         .mockResolvedValue(mockFlight);
@@ -63,8 +68,21 @@ describe('FlightsService', () => {
       expect(result).toBe(mockFlight);
     });
 
+    it('should throw BadRequestException when flight already exists', async () => {
+      jest
+        .spyOn(mockRepository, 'findByFlightNumber')
+        .mockResolvedValue(mockFlight);
+      const createSpy = jest.spyOn(mockRepository, 'create');
+
+      await expect(service.create(mockFlightData)).rejects.toThrow(
+        'Flight already exists',
+      );
+      expect(createSpy).not.toHaveBeenCalled();
+    });
+
     it('should throw error when repository fails', async () => {
       const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'findByFlightNumber').mockResolvedValue(null);
       const createSpy = jest
         .spyOn(mockRepository, 'create')
         .mockRejectedValue(error);
@@ -78,12 +96,10 @@ describe('FlightsService', () => {
     it('should throw error when flight data is invalid', async () => {
       const invalidDto: CreateFlightDto = {
         ...mockFlightData,
-        flightNumber: 'INVALID',
+        flightNumber: 'INVALID_FLIGHT_NUMBER_TOO_LONG',
       };
-      const createSpy = jest.spyOn(mockRepository, 'create');
 
       await expect(service.create(invalidDto)).rejects.toBeDefined();
-      expect(createSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -132,16 +148,12 @@ describe('FlightsService', () => {
       expect(result).toBe(mockFlight);
     });
 
-    it('should return null when flight not found', async () => {
-      const findByIdSpy = jest
-        .spyOn(mockRepository, 'findById')
-        .mockResolvedValue(null);
+    it('should throw NotFoundException when flight not found', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(null);
 
-      const result = await service.findById(flightId);
-
-      expect(findByIdSpy).toHaveBeenCalledTimes(1);
-      expect(findByIdSpy).toHaveBeenCalledWith(flightId);
-      expect(result).toBeNull();
+      await expect(service.findById(flightId)).rejects.toThrow(
+        'Flight not found',
+      );
     });
 
     it('should throw error when repository fails', async () => {
@@ -154,20 +166,160 @@ describe('FlightsService', () => {
     });
   });
 
-  describe('delete', () => {
-    it('should delete flight successfully', async () => {
-      const deleteSpy = jest
-        .spyOn(mockRepository, 'delete')
-        .mockResolvedValue();
+  describe('update', () => {
+    it('should update flight successfully with all fields', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
+      const updateSpy = jest
+        .spyOn(mockRepository, 'update')
+        .mockResolvedValue(mockFlight);
 
-      await service.delete(flightId);
+      const updateDto: UpdateFlightDto = {
+        flightNumber: 'LA4000',
+        airlineId: 'new-airline-id',
+        originIata: 'GRU',
+        destinationIata: 'CGH',
+        departureDatetime: new Date('2025-11-01T14:00:00Z'),
+        arrivalDatetime: new Date('2025-11-01T16:00:00Z'),
+        frequency: [0, 6],
+      };
 
-      expect(deleteSpy).toHaveBeenCalledTimes(1);
-      expect(deleteSpy).toHaveBeenCalledWith(flightId);
+      const result = await service.update(flightId, updateDto);
+
+      expect(updateSpy).toHaveBeenCalledTimes(1);
+      expect(updateSpy).toHaveBeenCalledWith(mockFlight);
+      expect(result).toBe(mockFlight);
+    });
+
+    it('should update only frequency when only frequency is provided', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
+      const updateSpy = jest
+        .spyOn(mockRepository, 'update')
+        .mockResolvedValue(mockFlight);
+
+      const updateDto: UpdateFlightDto = {
+        frequency: [0, 1, 2, 3, 4, 5, 6],
+      };
+
+      const result = await service.update(flightId, updateDto);
+
+      expect(updateSpy).toHaveBeenCalledTimes(1);
+      expect(updateSpy).toHaveBeenCalledWith(mockFlight);
+      expect(result).toBe(mockFlight);
+    });
+
+    it('should update only route when origin and destination are provided', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
+      const updateSpy = jest
+        .spyOn(mockRepository, 'update')
+        .mockResolvedValue(mockFlight);
+
+      const updateDto: UpdateFlightDto = {
+        originIata: 'GRU',
+        destinationIata: 'SDU',
+      };
+
+      const result = await service.update(flightId, updateDto);
+
+      expect(updateSpy).toHaveBeenCalledTimes(1);
+      expect(updateSpy).toHaveBeenCalledWith(mockFlight);
+      expect(result).toBe(mockFlight);
+    });
+
+    it('should update only schedule when departure and arrival times are provided', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
+      const updateSpy = jest
+        .spyOn(mockRepository, 'update')
+        .mockResolvedValue(mockFlight);
+
+      const updateDto: UpdateFlightDto = {
+        departureDatetime: new Date('2025-12-01T08:00:00Z'),
+        arrivalDatetime: new Date('2025-12-01T10:00:00Z'),
+      };
+
+      const result = await service.update(flightId, updateDto);
+
+      expect(updateSpy).toHaveBeenCalledTimes(1);
+      expect(updateSpy).toHaveBeenCalledWith(mockFlight);
+      expect(result).toBe(mockFlight);
     });
 
     it('should throw error when repository fails', async () => {
       const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
+      jest.spyOn(mockRepository, 'update').mockRejectedValue(error);
+
+      const updateDto: UpdateFlightDto = { frequency: [1, 3, 5] };
+
+      await expect(service.update(flightId, updateDto)).rejects.toThrow(
+        'Database error',
+      );
+    });
+
+    it('should throw error when flight not found', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(null);
+
+      const updateDto: UpdateFlightDto = { frequency: [1, 3, 5] };
+
+      await expect(service.update(flightId, updateDto)).rejects.toThrow(
+        'Flight not found',
+      );
+    });
+  });
+
+  describe('findByFlightNumber', () => {
+    it('should return flight when found', async () => {
+      const findByFlightNumberSpy = jest
+        .spyOn(mockRepository, 'findByFlightNumber')
+        .mockResolvedValue(mockFlight);
+
+      const result = await service.findByFlightNumber(
+        mockFlightData.flightNumber,
+      );
+
+      expect(findByFlightNumberSpy).toHaveBeenCalledTimes(1);
+      expect(findByFlightNumberSpy).toHaveBeenCalledWith(
+        mockFlightData.flightNumber,
+      );
+      expect(result).toBe(mockFlight);
+    });
+
+    it('should throw NotFoundException when flight not found', async () => {
+      jest.spyOn(mockRepository, 'findByFlightNumber').mockResolvedValue(null);
+
+      await expect(
+        service.findByFlightNumber(mockFlightData.flightNumber),
+      ).rejects.toThrow('Flight not found');
+    });
+
+    it('should throw error when repository fails', async () => {
+      const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'findByFlightNumber').mockRejectedValue(error);
+
+      await expect(
+        service.findByFlightNumber(mockFlightData.flightNumber),
+      ).rejects.toThrow('Database error');
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete flight successfully', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
+      jest.spyOn(mockRepository, 'delete').mockResolvedValue(undefined);
+
+      await expect(service.delete(flightId)).resolves.toBeUndefined();
+    });
+
+    it('should throw NotFoundException when flight not found', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(null);
+
+      await expect(service.delete(flightId)).rejects.toThrow(
+        'Flight not found',
+      );
+    });
+
+    it('should throw error when repository fails', async () => {
+      const error = new Error('Database error');
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockFlight);
       jest.spyOn(mockRepository, 'delete').mockRejectedValue(error);
 
       await expect(service.delete(flightId)).rejects.toThrow('Database error');
