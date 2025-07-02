@@ -31,7 +31,7 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/generated ./generated
@@ -43,4 +43,4 @@ USER nestjs
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"] 
+CMD ["pnpm", "run", "start:dev"]

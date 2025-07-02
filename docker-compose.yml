@@ -35,7 +35,9 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./src:/app/src
+      - .:/app
+      - /app/node_modules
+    command: pnpm run start:dev
     networks:
       - flights-network
     restart: unless-stopped
