@@ -1,3 +1,4 @@
+import { FlightFactory } from '../application/flight.factory';
 import { Flight } from '../domain/entities/flight.entity';
 
 type PrismaFlightData = {
@@ -16,7 +17,7 @@ type PrismaFlightData = {
 
 export class FlightMapper {
   static toDomain(prismaFlight: PrismaFlightData): Flight {
-    return Flight.create({
+    return FlightFactory.create({
       id: prismaFlight.id,
       flightNumber: prismaFlight.flightNumber,
       airlineId: prismaFlight.airlineId,

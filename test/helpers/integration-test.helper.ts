@@ -1,4 +1,5 @@
 import { PrismaService } from '../../src/shared/infrastructure/database/prisma.service';
+import { execSync } from 'child_process';
 
 export class IntegrationTestHelper {
   private static seedDataCreated = false;
@@ -10,6 +11,13 @@ export class IntegrationTestHelper {
     if (!process.env.DATABASE_URL) {
       throw new Error('DATABASE_URL not found. Make sure .env.test is loaded.');
     }
+    execSync(
+      'npx prisma migrate reset --force --skip-seed --schema=prisma/schema.prisma',
+      {
+        stdio: 'inherit',
+        env: process.env,
+      },
+    );
     await this.prisma.$connect();
 
     if (!IntegrationTestHelper.seedDataCreated) {

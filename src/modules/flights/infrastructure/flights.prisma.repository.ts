@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../shared/infrastructure/database/prisma.service';
 import { IFlightRepository } from '../domain/repositories/flight.repository';
 import { Flight } from '../domain/entities/flight.entity';
@@ -28,8 +28,14 @@ export class FlightsPrismaRepository implements IFlightRepository {
           destinationIata: query.destination,
         }),
         ...(query?.airlineCode && {
-          airline: { iataCode: query.airlineCode },
+          airline: {
+            iataCode: query.airlineCode,
+            deletedAt: null,
+          },
         }),
+      },
+      include: {
+        airline: true,
       },
     });
 
@@ -47,7 +53,51 @@ export class FlightsPrismaRepository implements IFlightRepository {
     return flight ? FlightMapper.toDomain(flight) : null;
   }
 
+  async update(flight: Flight): Promise<Flight> {
+    const persistenceData = FlightMapper.toPersistence(flight);
+
+    const existingFlight = await this.prisma.flight.findFirst({
+      where: {
+        id: persistenceData.id,
+        deletedAt: null,
+      },
+    });
+
+    if (!existingFlight) {
+      throw new NotFoundException('Flight not found');
+    }
+
+    const updatedFlight = await this.prisma.flight.update({
+      where: { id: persistenceData.id },
+      data: {
+        ...persistenceData,
+        updatedAt: new Date(),
+      },
+    });
+
+    return FlightMapper.toDomain(updatedFlight);
+  }
+
+  async findByFlightNumber(flightNumber: string): Promise<Flight | null> {
+    const flight = await this.prisma.flight.findFirst({
+      where: { flightNumber, deletedAt: null },
+    });
+
+    return flight ? FlightMapper.toDomain(flight) : null;
+  }
+
   async delete(id: string): Promise<void> {
+    const existingFlight = await this.prisma.flight.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    });
+
+    if (!existingFlight) {
+      throw new NotFoundException('Flight not found');
+    }
+
     await this.prisma.flight.update({
       where: { id },
       data: {
