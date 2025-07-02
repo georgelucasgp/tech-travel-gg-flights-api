@@ -29,12 +29,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
-    this.logger.error(`HTTP Exception: ${exception.constructor.name}`, {
-      error: exception.message,
-      status,
-      path: request?.url || 'unknown',
-      method: request?.method || 'unknown',
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      this.logger.error(`HTTP Exception: ${exception.constructor.name}`, {
+        error: exception.message,
+        status,
+        path: request?.url || 'unknown',
+        method: request?.method || 'unknown',
+      });
+    }
 
     let message: string | string[] = exception.message;
     let error: string | undefined;
