@@ -4,9 +4,8 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe, Logger, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PrismaExceptionFilter } from './shared/infrastructure/filters/prisma-exception.filter';
 import { HttpExceptionFilter } from './shared/infrastructure/filters/http-exception.filter';
 
 async function bootstrap() {
@@ -19,6 +18,13 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('api');
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -29,7 +35,6 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalFilters(new PrismaExceptionFilter());
 
   app.enableCors({
     origin:
