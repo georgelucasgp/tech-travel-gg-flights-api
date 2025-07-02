@@ -1,17 +1,36 @@
 import { Flight } from './flight.entity';
-import { FlightNumber, IataCode, Frequency, FlightId } from '../value-objects';
-import { TestFlightFactory } from '../../../../../test/factories/flight.factory';
+import { FlightNumber, IataCode, Frequency } from '../value-objects';
+import { FlightFactory, FlightProps } from '../../application/flight.factory';
+import { randomUUID } from 'crypto';
 
 describe('Flight Entity', () => {
+  const createFlight = (params: Partial<FlightProps> = {}): Flight => {
+    return FlightFactory.create({
+      id: params.id || randomUUID(),
+      flightNumber: params.flightNumber || 'LA3456',
+      airlineId: params.airlineId || 'airline-1',
+      originIata: params.originIata || 'BSB',
+      destinationIata: params.destinationIata || 'CGH',
+      departureDatetime:
+        params.departureDatetime || new Date('2025-07-01T09:30:00Z'),
+      arrivalDatetime:
+        params.arrivalDatetime || new Date('2025-07-01T10:30:00Z'),
+      frequency: params.frequency || [1, 2, 3, 4, 5],
+      createdAt: params.createdAt || new Date(),
+      updatedAt: params.updatedAt || new Date(),
+      deletedAt: params.deletedAt || null,
+    });
+  };
+
   it('should create a flight with all required properties', () => {
-    const newFlight = TestFlightFactory.create();
+    const newFlight = createFlight();
 
     expect(newFlight).toBeInstanceOf(Flight);
   });
 
   it('should create flight with provided id', () => {
-    const newFlight = TestFlightFactory.create({
-      id: new FlightId('123e4567-e89b-12d3-a456-426614174000'),
+    const newFlight = createFlight({
+      id: '123e4567-e89b-12d3-a456-426614174000',
     });
     expect(newFlight.id.getValue()).toBe(
       '123e4567-e89b-12d3-a456-426614174000',
@@ -19,12 +38,12 @@ describe('Flight Entity', () => {
   });
 
   it('should compare flights for equality', () => {
-    const flightId = new FlightId('123e4567-e89b-12d3-a456-426614174000');
+    const flightId = '123e4567-e89b-12d3-a456-426614174000';
 
-    const flight1 = TestFlightFactory.create({ id: flightId });
-    const flight2 = TestFlightFactory.create({ id: flightId });
-    const flight3 = TestFlightFactory.create({
-      id: new FlightId('456e7890-e89b-12d3-a456-426614174000'),
+    const flight1 = createFlight({ id: flightId });
+    const flight2 = createFlight({ id: flightId });
+    const flight3 = createFlight({
+      id: '456e7890-e89b-12d3-a456-426614174000',
     });
 
     expect(flight1.equals(flight2)).toBe(true);
@@ -34,7 +53,7 @@ describe('Flight Entity', () => {
   describe('Business Logic Methods', () => {
     describe('changeFlightNumber', () => {
       it('should change flight number successfully', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const newFlightNumber = new FlightNumber('LA4000');
         const originalUpdatedAt = flight.updatedAt;
 
@@ -49,7 +68,7 @@ describe('Flight Entity', () => {
 
     describe('changeAirline', () => {
       it('should change airline successfully', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const newAirlineId = '123e4567-e89b-12d3-a456-426614174000';
         const originalUpdatedAt = flight.updatedAt;
 
@@ -62,14 +81,14 @@ describe('Flight Entity', () => {
       });
 
       it('should throw error when airline ID is empty', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         expect(() => flight.changeAirline('')).toThrow(
           'Airline ID cannot be empty',
         );
       });
 
       it('should throw error when airline ID is whitespace', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         expect(() => flight.changeAirline('   ')).toThrow(
           'Airline ID cannot be empty',
         );
@@ -78,7 +97,7 @@ describe('Flight Entity', () => {
 
     describe('changeRoute', () => {
       it('should change route successfully', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const newOrigin = new IataCode('IMP');
         const newDestination = new IataCode('BSB');
         const originalUpdatedAt = flight.updatedAt;
@@ -93,7 +112,7 @@ describe('Flight Entity', () => {
       });
 
       it('should throw error when origin equals destination', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const sameIata = new IataCode('BSB');
         expect(() => flight.changeRoute(sameIata, sameIata)).toThrow(
           'Origin and destination cannot be the same',
@@ -103,7 +122,7 @@ describe('Flight Entity', () => {
 
     describe('changeSchedule', () => {
       it('should change schedule successfully', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const newDeparture = new Date('2025-08-01T14:00:00Z');
         const newArrival = new Date('2025-08-01T16:00:00Z');
         const originalUpdatedAt = flight.updatedAt;
@@ -118,7 +137,7 @@ describe('Flight Entity', () => {
       });
 
       it('should throw error when arrival is before departure', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const departure = new Date('2025-08-01T16:00:00Z');
         const arrival = new Date('2025-08-01T14:00:00Z');
 
@@ -128,7 +147,7 @@ describe('Flight Entity', () => {
       });
 
       it('should throw error when arrival equals departure', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const sameTime = new Date('2025-08-01T14:00:00Z');
 
         expect(() => flight.changeSchedule(sameTime, sameTime)).toThrow(
@@ -139,7 +158,7 @@ describe('Flight Entity', () => {
 
     describe('changeFrequency', () => {
       it('should change frequency successfully', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const newFrequency = new Frequency([0, 6]);
         const originalUpdatedAt = flight.updatedAt;
 
@@ -152,7 +171,7 @@ describe('Flight Entity', () => {
       });
 
       it('should change frequency to daily', () => {
-        const flight = TestFlightFactory.create();
+        const flight = createFlight();
         const dailyFrequency = new Frequency([0, 1, 2, 3, 4, 5, 6]);
         flight.changeFrequency(dailyFrequency);
         expect(flight.frequency.getValue()).toEqual([0, 1, 2, 3, 4, 5, 6]);

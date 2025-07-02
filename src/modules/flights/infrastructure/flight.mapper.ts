@@ -1,5 +1,5 @@
-import { FlightFactory } from '../application/flight.factory';
 import { Flight } from '../domain/entities/flight.entity';
+import { FlightFactory } from '../application/flight.factory';
 
 type PrismaFlightData = {
   id: string;

@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { validate as uuidValidate } from 'uuid';
 
 export class FlightId {
@@ -6,6 +7,13 @@ export class FlightId {
     if (!uuidValidate(value)) {
       throw new BadRequestException('Flight ID must be a valid UUID');
     }
+  }
+
+  static create(value?: string): FlightId {
+    if (arguments.length === 0) {
+      return new FlightId(randomUUID());
+    }
+    return new FlightId(value!);
   }
 
   getValue(): string {
