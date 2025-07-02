@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrismaExceptionFilter } from './shared/infrastructure/filters/prisma-exception.filter';
+import { HttpExceptionFilter } from './shared/infrastructure/filters/http-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -27,24 +28,24 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new PrismaExceptionFilter());
+
   app.enableCors({
     origin:
       process.env.NODE_ENV === 'production' ? 'https://techtravel.com' : '*',
     credentials: true,
   });
 
-  if (process.env.NODE_ENV !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('Tech Travel Flights API')
-      .setDescription('API for managing flights, itineraries, and bookings')
-      .setVersion('1.0')
-      .addTag('Flights')
-      .build();
+  const config = new DocumentBuilder()
+    .setTitle('Tech Travel Flights API')
+    .setDescription('API for managing flights, itineraries, and bookings')
+    .setVersion('1.0')
+    .addTag('Flights')
+    .build();
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('docs', app, document);
-  }
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   ['SIGTERM', 'SIGINT'].forEach((signal) => {
     process.on(signal, () => {

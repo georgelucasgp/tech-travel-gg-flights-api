@@ -14,22 +14,17 @@ interface ErrorResponse {
   details?: any;
 }
 
-@Catch()
+@Catch(
+  Prisma.PrismaClientKnownRequestError,
+  Prisma.PrismaClientValidationError,
+  Prisma.PrismaClientUnknownRequestError,
+  Prisma.PrismaClientRustPanicError,
+  Prisma.PrismaClientInitializationError,
+)
 export class PrismaExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(PrismaExceptionFilter.name);
 
   catch(exception: any, host: ArgumentsHost) {
-    const isPrismaError =
-      exception instanceof Prisma.PrismaClientKnownRequestError ||
-      exception instanceof Prisma.PrismaClientValidationError ||
-      exception instanceof Prisma.PrismaClientUnknownRequestError ||
-      exception instanceof Prisma.PrismaClientRustPanicError ||
-      exception instanceof Prisma.PrismaClientInitializationError;
-
-    if (!isPrismaError) {
-      throw exception;
-    }
-
     const ctx: HttpArgumentsHost = host.switchToHttp();
     const response: FastifyReply = ctx.getResponse<FastifyReply>();
     const request: FastifyRequest = ctx.getRequest<FastifyRequest>();
@@ -40,13 +35,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       const status = httpException.getStatus();
       const exceptionResponse = httpException.getResponse();
 
-      this.logger.error(`Prisma error caught: ${exception.constructor.name}`, {
-        error: exception.message,
-        code: 'code' in exception ? exception.code : 'N/A',
-        path: request?.url || 'unknown',
-        method: request?.method || 'unknown',
-        meta: 'meta' in exception ? exception.meta : undefined,
-      });
+      this.logger.error(`Prisma error caught: ${exception}`);
 
       let message = 'Database error occurred';
       if (typeof exceptionResponse === 'string') {
