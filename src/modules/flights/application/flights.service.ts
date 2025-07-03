@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { CreateFlightDto } from '../presentation/dto/create-flight.dto';
 import { UpdateFlightDto } from '../presentation/dto/update-flight.dto';
@@ -79,8 +80,8 @@ export class FlightsService {
     return await this.flightRepository.update(flight);
   }
 
-  findAll(query: FlightQueryDto): Promise<Flight[]> {
-    return this.flightRepository.findAll(query);
+  findAll(query: FlightQueryDto, showDeleted = false): Promise<Flight[]> {
+    return this.flightRepository.findAll(query, showDeleted);
   }
 
   async findById(id: string): Promise<Flight | null> {
@@ -105,5 +106,16 @@ export class FlightsService {
       throw new NotFoundException('Flight not found');
     }
     await this.flightRepository.delete(id);
+  }
+
+  async recovery(id: string): Promise<Flight> {
+    const existingFlight = await this.flightRepository.findById(id);
+    if (!existingFlight) {
+      throw new NotFoundException(`Flight with ID ${id} not found`);
+    }
+    if (!existingFlight.deletedAt) {
+      throw new ConflictException(`Flight with ID ${id} is already active`);
+    }
+    return await this.flightRepository.recovery(id);
   }
 }

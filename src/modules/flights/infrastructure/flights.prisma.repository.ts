@@ -4,6 +4,7 @@ import { IFlightRepository } from '../domain/repositories/flight.repository';
 import { Flight } from '../domain/entities/flight.entity';
 import { FlightMapper } from './flight.mapper';
 import { FlightQueryDto } from '../presentation/dto/flight-query.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class FlightsPrismaRepository implements IFlightRepository {
@@ -19,26 +20,27 @@ export class FlightsPrismaRepository implements IFlightRepository {
     return FlightMapper.toDomain(savedFlight);
   }
 
-  async findAll(query?: FlightQueryDto): Promise<Flight[]> {
+  async findAll(
+    query?: FlightQueryDto,
+    showDeleted = false,
+  ): Promise<Flight[]> {
+    const where: Prisma.FlightFindManyArgs['where'] = {
+      ...(showDeleted ? {} : { deletedAt: null }),
+      ...(query?.origin && { originIata: query.origin }),
+      ...(query?.destination && { destinationIata: query.destination }),
+      ...(query?.airlineCode && {
+        airline: {
+          iataCode: query.airlineCode,
+          ...(showDeleted ? {} : { deletedAt: null }),
+        },
+      }),
+    };
     const flights = await this.prisma.flight.findMany({
-      where: {
-        deletedAt: null,
-        ...(query?.origin && { originIata: query.origin }),
-        ...(query?.destination && {
-          destinationIata: query.destination,
-        }),
-        ...(query?.airlineCode && {
-          airline: {
-            iataCode: query.airlineCode,
-            deletedAt: null,
-          },
-        }),
-      },
+      where,
       include: {
         airline: true,
       },
     });
-
     return flights.map((flight) => FlightMapper.toDomain(flight));
   }
 
@@ -104,5 +106,13 @@ export class FlightsPrismaRepository implements IFlightRepository {
         deletedAt: new Date(),
       },
     });
+  }
+
+  async recovery(id: string): Promise<Flight> {
+    const recovered = await this.prisma.flight.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return FlightMapper.toDomain(recovered);
   }
 }

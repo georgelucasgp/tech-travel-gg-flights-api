@@ -1,4 +1,10 @@
-import { IsOptional, IsString, Length, Matches } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+  IsBooleanString,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 const IATA_CODE_REGEX = /^[A-Z]{3}$/;
@@ -36,4 +42,12 @@ export class FlightQueryDto {
   @Length(3, 3)
   @Matches(IATA_CODE_REGEX)
   destination?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'If true, returns all records (including deleted ones). Default: false.',
+  })
+  @IsOptional()
+  @IsBooleanString()
+  deleted_at?: string;
 }
