@@ -1,38 +1,30 @@
+import { Flight as PrismaFlight } from 'generated/prisma/client';
 import { Flight } from '../domain/entities/flight.entity';
-import { FlightFactory } from '../application/flight.factory';
-
-type PrismaFlightData = {
-  id: string;
-  flightNumber: string;
-  airlineId: string;
-  originIata: string;
-  destinationIata: string;
-  departureDatetime: Date;
-  arrivalDatetime: Date;
-  frequency: number[];
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
-};
+import {
+  FlightId,
+  FlightNumber,
+  IataCode,
+  Frequency,
+} from '../domain/value-objects';
 
 export class FlightMapper {
-  static toDomain(prismaFlight: PrismaFlightData): Flight {
-    return FlightFactory.create({
-      id: prismaFlight.id,
-      flightNumber: prismaFlight.flightNumber,
+  static toDomain(prismaFlight: PrismaFlight): Flight {
+    return Flight.fromPersistence({
+      id: FlightId.create(prismaFlight.id),
+      flightNumber: new FlightNumber(prismaFlight.flightNumber),
       airlineId: prismaFlight.airlineId,
-      originIata: prismaFlight.originIata,
-      destinationIata: prismaFlight.destinationIata,
+      originIata: new IataCode(prismaFlight.originIata),
+      destinationIata: new IataCode(prismaFlight.destinationIata),
       departureDatetime: prismaFlight.departureDatetime,
       arrivalDatetime: prismaFlight.arrivalDatetime,
-      frequency: prismaFlight.frequency,
+      frequency: new Frequency(prismaFlight.frequency),
       createdAt: prismaFlight.createdAt,
       updatedAt: prismaFlight.updatedAt,
       deletedAt: prismaFlight.deletedAt,
     });
   }
 
-  static toPersistence(flight: Flight): PrismaFlightData {
+  static toPersistence(flight: Flight): PrismaFlight {
     return {
       id: flight.id.getValue(),
       flightNumber: flight.flightNumber.getValue(),

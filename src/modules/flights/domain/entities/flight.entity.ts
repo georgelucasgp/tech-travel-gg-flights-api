@@ -58,6 +58,22 @@ export class Flight {
     );
   }
 
+  static fromPersistence(props: FlightProps): Flight {
+    return new Flight(
+      props.id,
+      props.flightNumber,
+      props.airlineId,
+      props.originIata,
+      props.destinationIata,
+      props.departureDatetime,
+      props.arrivalDatetime,
+      props.frequency,
+      props.createdAt,
+      props.updatedAt,
+      props.deletedAt,
+    );
+  }
+
   changeFlightNumber(newFlightNumber: FlightNumber): void {
     this._flightNumber = newFlightNumber;
     this.updateTimestamp();
