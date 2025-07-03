@@ -7,7 +7,7 @@ import {
 } from '../domain/value-objects';
 import { randomUUID } from 'crypto';
 
-export type FlightProps = {
+export type FlightFactoryProps = {
   id?: string;
   flightNumber: string;
   airlineId: string;
@@ -22,7 +22,7 @@ export type FlightProps = {
 };
 
 export class FlightFactory {
-  static create(props: FlightProps): Flight {
+  static create(props: FlightFactoryProps): Flight {
     return Flight.create({
       id: new FlightId(props.id ?? randomUUID()),
       flightNumber: new FlightNumber(props.flightNumber),

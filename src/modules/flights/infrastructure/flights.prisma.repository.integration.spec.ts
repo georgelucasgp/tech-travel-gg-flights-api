@@ -4,7 +4,10 @@ import { PrismaService } from '../../../shared/infrastructure/database/prisma.se
 import { Flight } from '../domain/entities/flight.entity';
 import { FlightsPrismaRepository } from './flights.prisma.repository';
 import { IntegrationTestHelper } from '../../../../test/helpers/integration-test.helper';
-import { FlightFactory } from '../application/flight.factory';
+import {
+  FlightFactory,
+  FlightFactoryProps,
+} from '../application/flight.factory';
 import { FlightNumber, IataCode, Frequency } from '../domain/value-objects';
 
 describe('FlightsPrismaRepository (Integration)', () => {
@@ -63,13 +66,13 @@ describe('FlightsPrismaRepository (Integration)', () => {
     });
 
     it('should create flight with valid frequency', async () => {
-      const flightProps = {
+      const flightFactoryProps: FlightFactoryProps = {
         ...getValidFlightProps(),
         flightNumber: 'AD4050',
         frequency: [0, 1, 2, 3, 4, 5, 6],
       };
 
-      const flightEntity = FlightFactory.create(flightProps);
+      const flightEntity = FlightFactory.create(flightFactoryProps);
       await repository.create(flightEntity);
 
       const savedFlight = await prisma.flight.findUnique({

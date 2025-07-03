@@ -1,10 +1,13 @@
 import { Flight } from './flight.entity';
 import { FlightNumber, IataCode, Frequency } from '../value-objects';
-import { FlightFactory, FlightProps } from '../../application/flight.factory';
+import {
+  FlightFactory,
+  FlightFactoryProps,
+} from '../../application/flight.factory';
 import { randomUUID } from 'crypto';
 
 describe('Flight Entity', () => {
-  const createFlight = (params: Partial<FlightProps> = {}): Flight => {
+  const createFlight = (params: Partial<FlightFactoryProps> = {}): Flight => {
     return FlightFactory.create({
       id: params.id || randomUUID(),
       flightNumber: params.flightNumber || 'LA3456',
