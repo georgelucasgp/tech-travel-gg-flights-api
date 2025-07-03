@@ -82,12 +82,12 @@ describe('BookingsPrismaRepository (Integration)', () => {
   const getValidBookingProps = (code = 'ABC123') => {
     const mockFlight = FlightFactory.create({
       id: 'bd04322f-ae22-459e-a2e3-4e7fc4992276',
-      flightNumber: 'LA3856',
-      airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-      originIata: 'BSB',
-      destinationIata: 'CGH',
-      departureDatetime: new Date('2025-07-03T10:00:00Z'),
-      arrivalDatetime: new Date('2025-07-03T12:00:00Z'),
+      flight_number: 'LA3856',
+      airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+      origin_iata: 'BSB',
+      destination_iata: 'CGH',
+      departure_datetime: new Date('2025-07-03T10:00:00Z'),
+      arrival_datetime: new Date('2025-07-03T12:00:00Z'),
       frequency: [1, 2, 3],
     });
 
@@ -97,7 +97,7 @@ describe('BookingsPrismaRepository (Integration)', () => {
     });
 
     return {
-      userId: 'ea2a9bf1-00c6-4fa9-a644-567e08cbf66c',
+      user_id: 'ea2a9bf1-00c6-4fa9-a644-567e08cbf66c',
       itinerary: mockItinerary,
       code,
       status: BookingStatus.pending().getValue(),

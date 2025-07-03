@@ -23,7 +23,7 @@ export class BookingMapper {
     return BookingFactory.create({
       id: prismaBooking.id,
       code: prismaBooking.code,
-      userId: prismaBooking.userId,
+      user_id: prismaBooking.userId,
       itinerary,
       status: prismaBooking.status,
       createdAt: prismaBooking.createdAt,

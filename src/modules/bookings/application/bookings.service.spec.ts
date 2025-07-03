@@ -16,12 +16,12 @@ describe('BookingsService', () => {
 
   const mockFlight = FlightFactory.create({
     id: '869a1938-d193-4a00-8a62-94b06fda6046',
-    flightNumber: 'LA3456',
-    airlineId: '869a1938-d193-4a00-8a62-94b06fda6046',
-    originIata: 'BSB',
-    destinationIata: 'CGH',
-    departureDatetime: new Date('2025-07-03T10:00:00Z'),
-    arrivalDatetime: new Date('2025-07-03T12:00:00Z'),
+    flight_number: 'LA3456',
+    airline_id: '869a1938-d193-4a00-8a62-94b06fda6046',
+    origin_iata: 'BSB',
+    destination_iata: 'CGH',
+    departure_datetime: new Date('2025-07-03T10:00:00Z'),
+    arrival_datetime: new Date('2025-07-03T12:00:00Z'),
     frequency: [1, 2, 3, 4, 5],
   });
 
@@ -32,7 +32,7 @@ describe('BookingsService', () => {
 
   const mockBooking = BookingFactory.create({
     id: '869a1938-d193-4a00-8a62-94b06fda6046',
-    userId: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
+    user_id: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
     itinerary: mockItinerary,
     code: 'ABC123',
     status: BookingStatus.pending().getValue(),
@@ -83,8 +83,8 @@ describe('BookingsService', () => {
         .mockResolvedValue(mockBooking);
 
       const result = await service.create({
-        userId: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
-        itineraryId: '869a1938-d193-4a00-8a62-94b06fda6046',
+        user_id: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
+        itinerary_id: '869a1938-d193-4a00-8a62-94b06fda6046',
       });
 
       expect(createSpy).toHaveBeenCalledWith(expect.any(Booking));
@@ -95,8 +95,8 @@ describe('BookingsService', () => {
       jest.spyOn(itineraryRepo, 'findById').mockResolvedValue(null);
       await expect(
         service.create({
-          userId: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
-          itineraryId: '869a1938-d193-4a00-8a62-94b06fda6046',
+          user_id: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
+          itinerary_id: '869a1938-d193-4a00-8a62-94b06fda6046',
         }),
       ).rejects.toThrow(BadRequestException);
     });
@@ -107,8 +107,8 @@ describe('BookingsService', () => {
 
       await expect(
         service.create({
-          userId: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
-          itineraryId: '869a1938-d193-4a00-8a62-94b06fda6046',
+          user_id: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
+          itinerary_id: '869a1938-d193-4a00-8a62-94b06fda6046',
         }),
       ).rejects.toThrow(BadRequestException);
     });

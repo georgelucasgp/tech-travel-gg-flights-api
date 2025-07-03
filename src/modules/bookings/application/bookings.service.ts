@@ -11,11 +11,7 @@ import { BookingFactory } from './booking.factory';
 import { BookingCode } from '../domain/value-objects/booking-code.value-object';
 import { BookingStatus } from '../domain/value-objects/booking-status.value-object';
 import { Itinerary } from '../../itineraries/domain/entities/itinerary.entity';
-
-export interface CreateBookingDto {
-  userId: string;
-  itineraryId: string;
-}
+import { CreateBookingDto } from '../presentation/dto/create-booking.dto';
 
 @Injectable()
 export class BookingsService {
@@ -26,18 +22,18 @@ export class BookingsService {
     private readonly itineraryRepository: IItineraryRepository,
   ) {}
 
-  async create(createDto: CreateBookingDto): Promise<Booking> {
+  async create(createBookingDto: CreateBookingDto): Promise<Booking> {
     const itinerary = await this.itineraryRepository.findById(
-      createDto.itineraryId,
+      createBookingDto.itinerary_id,
     );
     if (!itinerary) {
       throw new BadRequestException(
-        `Itinerary with ID ${createDto.itineraryId} not found`,
+        `Itinerary with ID ${createBookingDto.itinerary_id} not found`,
       );
     }
 
     const booking = await this.generateUniqueBooking(
-      createDto.userId,
+      createBookingDto.user_id,
       itinerary,
     );
 
@@ -90,13 +86,13 @@ export class BookingsService {
   }
 
   private async generateUniqueBooking(
-    userId: string,
+    user_id: string,
     itinerary: Itinerary,
   ): Promise<Booking> {
     const maxAttempts = 10;
     for (let attempts = 0; attempts < maxAttempts; attempts++) {
       const booking = BookingFactory.create({
-        userId,
+        user_id,
         itinerary,
         code: BookingCode.create().getValue(),
         status: BookingStatus.pending().getValue(),

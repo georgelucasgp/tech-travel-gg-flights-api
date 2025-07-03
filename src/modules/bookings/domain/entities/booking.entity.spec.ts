@@ -15,12 +15,12 @@ describe('Booking Entity', () => {
     flights: [
       FlightFactory.create({
         id: randomUUID(),
-        flightNumber: 'LA3000',
-        airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-        originIata: 'BSB',
-        destinationIata: 'CGH',
-        departureDatetime: new Date('2025-07-01T09:30:00Z'),
-        arrivalDatetime: new Date('2025-07-01T10:30:00Z'),
+        flight_number: 'LA3000',
+        airline_id: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+        origin_iata: 'BSB',
+        destination_iata: 'CGH',
+        departure_datetime: new Date('2025-07-01T09:30:00Z'),
+        arrival_datetime: new Date('2025-07-01T10:30:00Z'),
         frequency: [1, 2, 3, 4, 5],
       }),
     ],
@@ -34,7 +34,7 @@ describe('Booking Entity', () => {
   ): Booking => {
     return BookingFactory.create({
       id: params.id ?? randomUUID(),
-      userId: params.userId ?? '6c12a14f-4675-41cf-908f-e42fe0ed2906',
+      user_id: params.user_id ?? '6c12a14f-4675-41cf-908f-e42fe0ed2906',
       itinerary: params.itinerary ?? mockItinerary,
       code: params.code ?? BookingCode.create().toString(),
       status: params.status ?? BookingStatus.pending().toString(),
@@ -97,7 +97,7 @@ describe('Booking Entity', () => {
   });
 
   it('should throw if userId is empty', () => {
-    expect(() => createBooking({ userId: '' })).toThrow(BadRequestException);
+    expect(() => createBooking({ user_id: '' })).toThrow(BadRequestException);
   });
 
   it('should compare equality by id', () => {

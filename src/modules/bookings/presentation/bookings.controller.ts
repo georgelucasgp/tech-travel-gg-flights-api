@@ -50,8 +50,8 @@ export class BookingsController {
     @Body() createBookingDto: CreateBookingDto,
   ): Promise<BookingResponseDto> {
     const booking = await this.bookingsService.create({
-      userId: createBookingDto.userId,
-      itineraryId: createBookingDto.itineraryId,
+      user_id: createBookingDto.user_id,
+      itinerary_id: createBookingDto.itinerary_id,
     });
     return BookingResponseDto.fromEntity(booking);
   }

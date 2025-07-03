@@ -8,7 +8,7 @@ export class CreateBookingDto {
   })
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  user_id: string;
 
   @ApiProperty({
     description: 'Itinerary ID to be booked',
@@ -16,5 +16,5 @@ export class CreateBookingDto {
   })
   @IsUUID()
   @IsNotEmpty()
-  itineraryId: string;
+  itinerary_id: string;
 }
