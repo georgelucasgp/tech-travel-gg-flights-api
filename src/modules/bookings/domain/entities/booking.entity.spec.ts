@@ -26,7 +26,6 @@ describe('Booking Entity', () => {
     ],
     createdAt: new Date(),
     updatedAt: new Date(),
-    deletedAt: null,
   });
 
   const createBooking = (
@@ -40,7 +39,6 @@ describe('Booking Entity', () => {
       status: params.status ?? BookingStatus.pending().toString(),
       createdAt: params.createdAt ?? new Date(),
       updatedAt: params.updatedAt ?? new Date(),
-      deletedAt: params.deletedAt ?? null,
     });
   };
 

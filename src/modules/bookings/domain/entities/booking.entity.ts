@@ -10,7 +10,6 @@ export interface BookingProps {
   status: BookingStatus;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date | null;
 }
 
 export class Booking {
@@ -22,7 +21,6 @@ export class Booking {
     private _status: BookingStatus,
     private readonly _createdAt: Date,
     private _updatedAt: Date,
-    private readonly _deletedAt: Date | null,
   ) {}
 
   static create(props: BookingProps): Booking {
@@ -46,7 +44,6 @@ export class Booking {
       props.status,
       props.createdAt,
       props.updatedAt,
-      props.deletedAt,
     );
   }
 
@@ -76,10 +73,6 @@ export class Booking {
 
   get updatedAt(): Date {
     return this._updatedAt;
-  }
-
-  get deletedAt(): Date | null {
-    return this._deletedAt;
   }
 
   confirm(): void {

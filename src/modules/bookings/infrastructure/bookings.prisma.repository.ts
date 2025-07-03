@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/infrastructure/database/prisma.service';
 import { IBookingRepository } from '../domain/repositories/booking.repository';
 import { Booking } from '../domain/entities/booking.entity';
@@ -41,7 +41,6 @@ export class BookingsPrismaRepository implements IBookingRepository {
     const booking = await this.prisma.booking.findFirst({
       where: {
         id,
-        deletedAt: null,
       },
       include: {
         itinerary: {
@@ -66,7 +65,6 @@ export class BookingsPrismaRepository implements IBookingRepository {
     const booking = await this.prisma.booking.findFirst({
       where: {
         code,
-        deletedAt: null,
       },
       include: {
         itinerary: {
@@ -91,7 +89,6 @@ export class BookingsPrismaRepository implements IBookingRepository {
     const bookings = await this.prisma.booking.findMany({
       where: {
         userId,
-        deletedAt: null,
       },
       include: {
         itinerary: {
@@ -111,38 +108,22 @@ export class BookingsPrismaRepository implements IBookingRepository {
         createdAt: 'desc',
       },
     });
-
     return bookings.map((booking) => BookingMapper.toDomain(booking));
-  }
-
-  async delete(id: string): Promise<void> {
-    const existingBooking = await this.prisma.booking.findFirst({
-      where: {
-        id,
-        deletedAt: null,
-      },
-    });
-
-    if (!existingBooking) {
-      throw new NotFoundException('Booking not found');
-    }
-
-    await this.prisma.booking.update({
-      where: { id },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
   }
 
   async existsByCode(code: string): Promise<boolean> {
     const count = await this.prisma.booking.count({
       where: {
         code,
-        deletedAt: null,
       },
     });
 
     return count > 0;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.booking.delete({
+      where: { id },
+    });
   }
 }

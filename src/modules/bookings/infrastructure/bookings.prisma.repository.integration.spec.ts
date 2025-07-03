@@ -46,7 +46,6 @@ describe('BookingsPrismaRepository (Integration)', () => {
         frequency: [1, 2, 3],
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
       },
     });
 
@@ -55,7 +54,6 @@ describe('BookingsPrismaRepository (Integration)', () => {
         id: 'b66cfa8b-3f09-4644-8052-cf82511a463b',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
       },
     });
 
@@ -74,7 +72,6 @@ describe('BookingsPrismaRepository (Integration)', () => {
         email: 'test@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
       },
     });
   };
@@ -175,7 +172,7 @@ describe('BookingsPrismaRepository (Integration)', () => {
         where: { id: bookingEntity.id.getValue() },
       });
 
-      expect(deletedBooking?.deletedAt).not.toBeNull();
+      expect(deletedBooking).toBeNull();
     });
   });
 });

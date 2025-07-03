@@ -27,7 +27,7 @@ export class BookingsService {
       createBookingDto.itinerary_id,
     );
     if (!itinerary) {
-      throw new BadRequestException(
+      throw new NotFoundException(
         `Itinerary with ID ${createBookingDto.itinerary_id} not found`,
       );
     }
@@ -60,28 +60,12 @@ export class BookingsService {
     return await this.bookingRepository.findByUserId(userId);
   }
 
-  async cancel(id: string): Promise<void> {
-    const booking = await this.bookingRepository.findById(id);
-    if (!booking) {
-      throw new NotFoundException('Booking not found');
-    }
-
-    try {
-      booking.cancel();
-      await this.bookingRepository.create(booking);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new BadRequestException(error.message);
-      }
-      throw error;
-    }
-  }
-
   async delete(id: string): Promise<void> {
     const booking = await this.bookingRepository.findById(id);
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }
+
     await this.bookingRepository.delete(id);
   }
 
@@ -98,7 +82,6 @@ export class BookingsService {
         status: BookingStatus.pending().getValue(),
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
         id: undefined,
       });
 

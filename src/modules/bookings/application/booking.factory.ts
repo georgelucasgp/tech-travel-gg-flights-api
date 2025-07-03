@@ -10,7 +10,6 @@ export interface BookingFactoryProps {
   status: string;
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date | null;
 }
 
 export class BookingFactory {
@@ -23,7 +22,6 @@ export class BookingFactory {
       status: BookingStatus.create(props.status),
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
-      deletedAt: props.deletedAt ?? null,
     };
 
     return Booking.create(bookingProps);

@@ -1,13 +1,13 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Delete,
   HttpCode,
   HttpStatus,
-  Param,
-  Post,
-  ParseUUIDPipe,
 } from '@nestjs/common';
 import { BookingsService } from '../application/bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -58,11 +58,11 @@ export class BookingsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Cancel a booking' })
-  @ApiResponse({ status: 204, description: 'Booking cancelled successfully' })
+  @ApiOperation({ summary: 'Delete a booking' })
+  @ApiResponse({ status: 204, description: 'Booking deleted successfully' })
   @ApiResponse({ status: 404, description: 'Booking not found' })
-  async cancel(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    await this.bookingsService.cancel(id);
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.bookingsService.delete(id);
   }
 
   @Get('users/:userId')

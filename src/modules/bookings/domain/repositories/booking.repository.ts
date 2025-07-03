@@ -5,6 +5,6 @@ export interface IBookingRepository {
   findById(id: string): Promise<Booking | null>;
   findByCode(code: string): Promise<Booking | null>;
   findByUserId(userId: string): Promise<Booking[]>;
-  delete(id: string): Promise<void>;
   existsByCode(code: string): Promise<boolean>;
+  delete(id: string): Promise<void>;
 }

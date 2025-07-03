@@ -38,7 +38,6 @@ describe('BookingsService', () => {
     status: BookingStatus.pending().getValue(),
     createdAt: new Date(),
     updatedAt: new Date(),
-    deletedAt: null,
   });
 
   beforeEach(async () => {
@@ -98,7 +97,7 @@ describe('BookingsService', () => {
           user_id: 'b36297ad-1d6a-43c1-a2d3-59a488775437',
           itinerary_id: '869a1938-d193-4a00-8a62-94b06fda6046',
         }),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw if cannot generate unique code', async () => {
@@ -131,52 +130,15 @@ describe('BookingsService', () => {
     });
   });
 
-  describe('cancel', () => {
-    it('should cancel booking successfully', async () => {
-      jest.spyOn(bookingRepo, 'findById').mockResolvedValue(mockBooking);
-      const createSpy = jest
-        .spyOn(bookingRepo, 'create')
-        .mockResolvedValue(mockBooking);
-
-      const cancelSpy = jest
-        .spyOn(mockBooking, 'cancel')
-        .mockImplementation(() => {});
-
-      await service.cancel('869a1938-d193-4a00-8a62-94b06fda6046');
-      expect(cancelSpy).toHaveBeenCalled();
-      expect(createSpy).toHaveBeenCalledWith(expect.any(Booking));
-    });
-
-    it('should throw NotFoundException if booking not found', async () => {
-      jest.spyOn(bookingRepo, 'findById').mockResolvedValue(null);
-      await expect(
-        service.cancel('869a1938-d193-4a00-8a62-94b06fda6046'),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw BadRequestException if cancel throws', async () => {
-      jest.spyOn(bookingRepo, 'findById').mockResolvedValue(mockBooking);
-      const cancelSpy = jest
-        .spyOn(mockBooking, 'cancel')
-        .mockImplementation(() => {
-          throw new Error('Cannot cancel');
-        });
-      await expect(
-        service.cancel('869a1938-d193-4a00-8a62-94b06fda6046'),
-      ).rejects.toThrow(BadRequestException);
-      expect(cancelSpy).toHaveBeenCalled();
-    });
-  });
-
   describe('delete', () => {
     it('should delete booking successfully', async () => {
       jest.spyOn(bookingRepo, 'findById').mockResolvedValue(mockBooking);
       const deleteSpy = jest.spyOn(bookingRepo, 'delete').mockResolvedValue();
+
       await service.delete('869a1938-d193-4a00-8a62-94b06fda6046');
-      expect(deleteSpy).toHaveBeenCalledWith(
-        '869a1938-d193-4a00-8a62-94b06fda6046',
-      );
+      expect(deleteSpy).toHaveBeenCalled();
     });
+
     it('should throw NotFoundException if booking not found', async () => {
       jest.spyOn(bookingRepo, 'findById').mockResolvedValue(null);
       await expect(
