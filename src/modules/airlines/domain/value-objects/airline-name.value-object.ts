@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 export class AirlineName {
   constructor(private readonly value: string) {
     this.validate();
@@ -9,11 +11,15 @@ export class AirlineName {
 
   private validate(): void {
     if (!this.value || this.value.length < 2) {
-      throw new Error('Airline name must have at least 2 characters');
+      throw new BadRequestException(
+        'Airline name must have at least 2 characters',
+      );
     }
 
     if (this.value.length > 100) {
-      throw new Error('Airline name cannot exceed 100 characters');
+      throw new BadRequestException(
+        'Airline name cannot exceed 100 characters',
+      );
     }
   }
 
