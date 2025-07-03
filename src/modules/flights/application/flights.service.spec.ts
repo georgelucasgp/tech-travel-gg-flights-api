@@ -6,6 +6,11 @@ import { UpdateFlightDto } from '../presentation/dto/update-flight.dto';
 import { FlightsService } from './flights.service';
 import { randomUUID } from 'crypto';
 import { FlightFactory } from './flight.factory';
+import { AirportsModule } from '../../airports/airports.module';
+import { PrismaModule } from 'src/shared/infrastructure/database/prisma.module';
+import { AirlinesModule } from 'src/modules/airlines/airlines.module';
+import { AirportsService } from 'src/modules/airports/application/airports.service';
+import { AirlinesService } from 'src/modules/airlines/application/airlines.service';
 
 describe('FlightsService', () => {
   let service: FlightsService;
@@ -26,24 +31,36 @@ describe('FlightsService', () => {
 
   const mockFlight = FlightFactory.create(mockFlightData);
 
-  beforeEach(async () => {
-    const mockRepositoryFactory = (): jest.Mocked<IFlightRepository> => ({
-      create: jest.fn(),
-      findAll: jest.fn(),
-      findById: jest.fn(),
-      findByFlightNumber: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      recovery: jest.fn(),
-    });
+  const mockRepositoryFactory = (): jest.Mocked<IFlightRepository> => ({
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    findByFlightNumber: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    recovery: jest.fn(),
+  });
 
+  const mockAirportsService: jest.Mocked<Partial<AirportsService>> = {
+    findByIataCode: jest
+      .fn()
+      .mockResolvedValue({ id: '1', name: 'GRU', iataCode: 'GRU' }),
+  };
+
+  const mockAirlinesService: jest.Mocked<Partial<AirlinesService>> = {
+    findById: jest
+      .fn()
+      .mockResolvedValue({ id: airlineId, name: 'LATAM', iataCode: 'LA' }),
+  };
+
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [AirportsModule, AirlinesModule, PrismaModule],
       providers: [
         FlightsService,
-        {
-          provide: 'IFlightRepository',
-          useFactory: mockRepositoryFactory,
-        },
+        { provide: 'IFlightRepository', useFactory: mockRepositoryFactory },
+        { provide: AirportsService, useValue: mockAirportsService },
+        { provide: AirlinesService, useValue: mockAirlinesService },
       ],
     }).compile();
 
@@ -57,7 +74,9 @@ describe('FlightsService', () => {
 
   describe('create', () => {
     it('should create a flight successfully', async () => {
+      jest.spyOn(mockRepository, 'findById').mockResolvedValue(null);
       jest.spyOn(mockRepository, 'findByFlightNumber').mockResolvedValue(null);
+
       const createSpy = jest
         .spyOn(mockRepository, 'create')
         .mockResolvedValue(mockFlight);

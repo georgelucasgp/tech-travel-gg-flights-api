@@ -13,17 +13,19 @@ export class FlightResponseDto {
   updated_at: Date;
   deleted_at: Date | null;
 
-  constructor(flight: Flight) {
-    this.id = flight.id.getValue();
-    this.flight_number = flight.flightNumber.getValue();
-    this.airline_id = flight.airlineId;
-    this.origin_iata = flight.originIata.getValue();
-    this.destination_iata = flight.destinationIata.getValue();
-    this.departure_datetime = flight.departureDatetime;
-    this.arrival_datetime = flight.arrivalDatetime;
-    this.frequency = flight.frequency.getValue();
-    this.created_at = flight.createdAt;
-    this.updated_at = flight.updatedAt;
-    this.deleted_at = flight.deletedAt;
+  static fromEntity(flight: Flight): FlightResponseDto {
+    return {
+      id: flight.id.getValue(),
+      flight_number: flight.flightNumber.getValue(),
+      airline_id: flight.airlineId,
+      origin_iata: flight.originIata.getValue(),
+      destination_iata: flight.destinationIata.getValue(),
+      departure_datetime: flight.departureDatetime,
+      arrival_datetime: flight.arrivalDatetime,
+      frequency: flight.frequency.getValue(),
+      created_at: flight.createdAt,
+      updated_at: flight.updatedAt,
+      deleted_at: flight.deletedAt,
+    };
   }
 }

@@ -9,6 +9,7 @@ import {
   FlightFactoryProps,
 } from '../application/flight.factory';
 import { FlightNumber, IataCode, Frequency } from '../domain/value-objects';
+import { AirportsModule } from '../../airports/airports.module';
 
 describe('FlightsPrismaRepository (Integration)', () => {
   let repository: FlightsPrismaRepository;
@@ -17,7 +18,7 @@ describe('FlightsPrismaRepository (Integration)', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FlightsPrismaRepository, PrismaService],
+      providers: [FlightsPrismaRepository, AirportsModule, PrismaService],
     }).compile();
 
     repository = module.get<FlightsPrismaRepository>(FlightsPrismaRepository);

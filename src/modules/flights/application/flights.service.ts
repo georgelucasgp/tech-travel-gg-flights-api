@@ -12,21 +12,30 @@ import { Flight } from '../domain/entities/flight.entity';
 import { FlightQueryDto } from '../presentation/dto/flight-query.dto';
 import { FlightFactory } from './flight.factory';
 import { FlightNumber, IataCode, Frequency } from '../domain/value-objects';
+import { AirportsService } from '../../airports/application/airports.service';
+import { AirlinesService } from '../../airlines/application/airlines.service';
 
 @Injectable()
 export class FlightsService {
   constructor(
     @Inject('IFlightRepository')
     private readonly flightRepository: IFlightRepository,
+    private readonly airportsService: AirportsService,
+    private readonly airlinesService: AirlinesService,
   ) {}
 
   async create(createDto: CreateFlightDto): Promise<Flight> {
+    await this.ensureAirlineExists(createDto.airline_id);
+    await this.ensureOriginAirportExists(createDto.origin_iata);
+    await this.ensureDestinationAirportExists(createDto.destination_iata);
+
     const existingFlight = await this.flightRepository.findByFlightNumber(
       createDto.flight_number,
     );
     if (existingFlight) {
       throw new BadRequestException('Flight already exists');
     }
+
     const flight = FlightFactory.create({
       flight_number: createDto.flight_number,
       airline_id: createDto.airline_id,
@@ -117,5 +126,29 @@ export class FlightsService {
       throw new ConflictException(`Flight with ID ${id} is already active`);
     }
     return await this.flightRepository.recovery(id);
+  }
+
+  private async ensureOriginAirportExists(iata: string) {
+    const airport = await this.airportsService.findByIataCode(iata);
+    if (!airport) {
+      throw new BadRequestException(`Origin airport (${iata}) does not exist.`);
+    }
+  }
+
+  private async ensureDestinationAirportExists(iata: string) {
+    const airport = await this.airportsService.findByIataCode(iata);
+    if (!airport) {
+      throw new BadRequestException(
+        `Destination airport (${iata}) does not exist.`,
+      );
+    }
+  }
+
+  private async ensureAirlineExists(airlineId: string) {
+    try {
+      await this.airlinesService.findById(airlineId);
+    } catch {
+      throw new BadRequestException(`Airline (${airlineId}) does not exist.`);
+    }
   }
 }
