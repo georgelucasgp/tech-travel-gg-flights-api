@@ -48,6 +48,16 @@ export class AirportsService {
     return airport;
   }
 
+  async findByIataCode(iataCode: string): Promise<Airport> {
+    const airport = await this.airportRepository.findByIataCode(iataCode);
+    if (!airport) {
+      throw new NotFoundException(
+        `Airport with IATA code ${iataCode} not found`,
+      );
+    }
+    return airport;
+  }
+
   async update(id: string, updateDto: UpdateAirportDto): Promise<Airport> {
     const existingAirport = await this.findById(id);
 

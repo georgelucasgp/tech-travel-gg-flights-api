@@ -11,15 +11,17 @@ export class AirportResponseDto {
   updated_at: Date;
   deleted_at: Date | null;
 
-  constructor(airport: Airport) {
-    this.id = airport.id.getValue();
-    this.name = airport.name.getValue();
-    this.iata_code = airport.iataCode.getValue();
-    this.city = airport.city.getValue();
-    this.country = airport.country.getValue();
-    this.timezone = airport.timezone.getValue();
-    this.created_at = airport.createdAt;
-    this.updated_at = airport.updatedAt;
-    this.deleted_at = airport.deletedAt;
+  static fromEntity(airport: Airport): AirportResponseDto {
+    return {
+      id: airport.id.getValue(),
+      name: airport.name.getValue(),
+      iata_code: airport.iataCode.getValue(),
+      city: airport.city.getValue(),
+      country: airport.country.getValue(),
+      timezone: airport.timezone.getValue(),
+      created_at: airport.createdAt,
+      updated_at: airport.updatedAt,
+      deleted_at: airport.deletedAt,
+    };
   }
 }

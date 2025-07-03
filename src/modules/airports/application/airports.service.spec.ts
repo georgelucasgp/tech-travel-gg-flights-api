@@ -102,7 +102,7 @@ describe('AirportsService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findById', () => {
     it('should return airport when found', async () => {
       const airportId = randomUUID();
       const findByIdSpy = jest
