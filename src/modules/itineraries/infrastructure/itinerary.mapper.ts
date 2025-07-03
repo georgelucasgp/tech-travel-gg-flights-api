@@ -19,7 +19,7 @@ export class ItineraryMapper {
       FlightMapper.toDomain(itineraryFlight.flight),
     );
 
-    return Itinerary.fromPersistence({
+    return Itinerary.create({
       id: ItineraryId.create(prismaItinerary.id),
       flights: domainFlights,
       createdAt: prismaItinerary.createdAt,

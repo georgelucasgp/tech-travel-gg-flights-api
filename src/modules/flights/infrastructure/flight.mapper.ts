@@ -9,7 +9,7 @@ import {
 
 export class FlightMapper {
   static toDomain(prismaFlight: PrismaFlight): Flight {
-    return Flight.fromPersistence({
+    return Flight.create({
       id: FlightId.create(prismaFlight.id),
       flightNumber: new FlightNumber(prismaFlight.flightNumber),
       airlineId: prismaFlight.airlineId,

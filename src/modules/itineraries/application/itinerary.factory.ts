@@ -13,16 +13,12 @@ export type ItineraryFactoryProps = {
 
 export class ItineraryFactory {
   static create(props: ItineraryFactoryProps): Itinerary {
-    return Itinerary.fromPersistence({
+    return Itinerary.create({
       id: ItineraryId.create(props.id ?? randomUUID()),
       flights: props.flights,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
       deletedAt: props.deletedAt ?? null,
     });
-  }
-
-  static createFromFlights(flights: Flight[]): Itinerary {
-    return Itinerary.create(flights);
   }
 }

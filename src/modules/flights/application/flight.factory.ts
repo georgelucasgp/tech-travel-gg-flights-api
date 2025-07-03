@@ -5,7 +5,6 @@ import {
   Frequency,
   FlightId,
 } from '../domain/value-objects';
-import { randomUUID } from 'crypto';
 
 export type FlightFactoryProps = {
   id?: string;
@@ -24,7 +23,7 @@ export type FlightFactoryProps = {
 export class FlightFactory {
   static create(props: FlightFactoryProps): Flight {
     return Flight.create({
-      id: new FlightId(props.id ?? randomUUID()),
+      id: props.id ? new FlightId(props.id) : FlightId.create(),
       flightNumber: new FlightNumber(props.flightNumber),
       airlineId: props.airlineId,
       originIata: new IataCode(props.originIata),

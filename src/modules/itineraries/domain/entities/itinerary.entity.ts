@@ -18,19 +18,9 @@ export class Itinerary {
     private _deletedAt: Date | null,
   ) {}
 
-  static create(flights: Flight[]): Itinerary {
-    this.validateFlightsSequence(flights);
+  static create(props: ItineraryProps): Itinerary {
+    this.validateFlightsSequence(props.flights);
 
-    return new Itinerary(
-      ItineraryId.create(),
-      flights,
-      new Date(),
-      new Date(),
-      null,
-    );
-  }
-
-  static fromPersistence(props: ItineraryProps): Itinerary {
     return new Itinerary(
       props.id,
       props.flights,
