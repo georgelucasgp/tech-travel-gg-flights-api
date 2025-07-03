@@ -3,11 +3,13 @@ import { ItineraryId } from '../value-objects';
 import { Flight } from 'src/modules/flights/domain/entities/flight.entity';
 import {
   FlightFactory,
-  FlightProps,
+  FlightFactoryProps,
 } from 'src/modules/flights/application/flight.factory';
 
-describe('Itinerary', () => {
-  const createFlightOne = (params: Partial<FlightProps> = {}): Flight => {
+describe('Itinerary Entity', () => {
+  const createFlightOne = (
+    params: Partial<FlightFactoryProps> = {},
+  ): Flight => {
     return FlightFactory.create({
       flightNumber: params.flightNumber || 'LA3456',
       airlineId: params.airlineId || 'airline-1',
@@ -24,7 +26,9 @@ describe('Itinerary', () => {
     });
   };
 
-  const createFlightTwo = (params: Partial<FlightProps> = {}): Flight => {
+  const createFlightTwo = (
+    params: Partial<FlightFactoryProps> = {},
+  ): Flight => {
     return FlightFactory.create({
       flightNumber: params.flightNumber || 'LA7890',
       airlineId: params.airlineId || 'airline-2',

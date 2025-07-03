@@ -2,31 +2,42 @@ import { Flight } from '../../../flights/domain/entities/flight.entity';
 import { ItineraryId } from '../value-objects';
 
 export interface ItineraryProps {
-  id?: ItineraryId;
+  id: ItineraryId;
   flights: Flight[];
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }
 
 export class Itinerary {
-  private readonly _id: ItineraryId;
-  private readonly _flights: Flight[];
-  private readonly _createdAt: Date;
-  private _updatedAt: Date;
-  private _deletedAt: Date | null;
-
-  private constructor(props: ItineraryProps) {
-    this._id = props.id || ItineraryId.create();
-    this._flights = props.flights;
-    this._createdAt = props.createdAt || new Date();
-    this._updatedAt = props.updatedAt || new Date();
-    this._deletedAt = props.deletedAt || null;
-  }
+  private constructor(
+    private readonly _id: ItineraryId,
+    private readonly _flights: Flight[],
+    private readonly _createdAt: Date,
+    private _updatedAt: Date,
+    private _deletedAt: Date | null,
+  ) {}
 
   static create(flights: Flight[]): Itinerary {
     this.validateFlightsSequence(flights);
-    return new Itinerary({ flights });
+
+    return new Itinerary(
+      ItineraryId.create(),
+      flights,
+      new Date(),
+      new Date(),
+      null,
+    );
+  }
+
+  static fromPersistence(props: ItineraryProps): Itinerary {
+    return new Itinerary(
+      props.id,
+      props.flights,
+      props.createdAt,
+      props.updatedAt,
+      props.deletedAt,
+    );
   }
 
   private static validateFlightsSequence(flights: Flight[]): void {
@@ -90,6 +101,15 @@ export class Itinerary {
     }
   }
 
+  markAsDeleted(): void {
+    this._deletedAt = new Date();
+    this.updateTimestamp();
+  }
+
+  private updateTimestamp(): void {
+    this._updatedAt = new Date();
+  }
+
   get id(): ItineraryId {
     return this._id;
   }
@@ -142,12 +162,11 @@ export class Itinerary {
     return Math.max(0, this._flights.length - 1);
   }
 
-  markAsDeleted(): void {
-    this._deletedAt = new Date();
-    this._updatedAt = new Date();
-  }
-
   isDeleted(): boolean {
     return this._deletedAt !== null;
+  }
+
+  equals(other: Itinerary): boolean {
+    return this._id.equals(other._id);
   }
 }
