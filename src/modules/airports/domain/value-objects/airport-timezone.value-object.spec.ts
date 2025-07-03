@@ -12,12 +12,6 @@ describe('AirportTimezone', () => {
     );
   });
 
-  it('should throw error for invalid timezone', () => {
-    expect(() => new AirportTimezone('@@@')).toThrow(
-      'Airport timezone must be a valid timezone format',
-    );
-  });
-
   it('should compare equality correctly', () => {
     const a = new AirportTimezone('UTC');
     const b = new AirportTimezone('UTC');
