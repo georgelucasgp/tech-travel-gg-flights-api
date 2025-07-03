@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
@@ -22,14 +23,21 @@ export class AirportsService {
       createDto.iata_code,
     );
     if (existingAirport) {
-      throw new BadRequestException('Airport already exists');
+      if (existingAirport.deletedAt) {
+        throw new ConflictException(
+          `Airport with IATA code ${createDto.iata_code} is inactive. Use recovery endpoint to reactivate it.`,
+        );
+      }
+      throw new ConflictException(
+        `Airport with IATA code ${createDto.iata_code} already exists`,
+      );
     }
     const airport = AirportFactory.create(createDto);
     return await this.airportRepository.create(airport);
   }
 
-  async findAll(): Promise<Airport[]> {
-    return await this.airportRepository.findAll();
+  async findAll(showDeleted = false): Promise<Airport[]> {
+    return await this.airportRepository.findAll(showDeleted);
   }
 
   async findById(id: string): Promise<Airport> {
@@ -42,6 +50,12 @@ export class AirportsService {
 
   async update(id: string, updateDto: UpdateAirportDto): Promise<Airport> {
     const existingAirport = await this.findById(id);
+
+    if (updateDto.iata_code && existingAirport.deletedAt) {
+      throw new ConflictException(
+        `Airport with IATA code ${updateDto.iata_code} is inactive. Use recovery endpoint to reactivate it.`,
+      );
+    }
 
     if (
       updateDto.iata_code &&
@@ -75,5 +89,16 @@ export class AirportsService {
   async remove(id: string): Promise<void> {
     await this.findById(id);
     await this.airportRepository.delete(id);
+  }
+
+  async recovery(id: string): Promise<Airport> {
+    const existingAirport = await this.airportRepository.findById(id);
+    if (!existingAirport) {
+      throw new NotFoundException(`Airport with ID ${id} not found`);
+    }
+    if (!existingAirport.deletedAt) {
+      throw new ConflictException(`Airport with ID ${id} is already active`);
+    }
+    return await this.airportRepository.recovery(id);
   }
 }

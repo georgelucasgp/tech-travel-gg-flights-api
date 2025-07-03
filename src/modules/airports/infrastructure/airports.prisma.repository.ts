@@ -18,11 +18,9 @@ export class AirportsPrismaRepository implements IAirportRepository {
     return AirportMapper.toDomain(savedAirport);
   }
 
-  async findAll(): Promise<Airport[]> {
+  async findAll(showDeleted = false): Promise<Airport[]> {
     const airports = await this.prisma.airport.findMany({
-      where: {
-        deletedAt: null,
-      },
+      where: showDeleted ? {} : { deletedAt: null },
       orderBy: {
         name: 'asc',
       },
@@ -46,7 +44,6 @@ export class AirportsPrismaRepository implements IAirportRepository {
     const airport = await this.prisma.airport.findFirst({
       where: {
         iataCode,
-        deletedAt: null,
       },
     });
 
@@ -96,5 +93,13 @@ export class AirportsPrismaRepository implements IAirportRepository {
         deletedAt: new Date(),
       },
     });
+  }
+
+  async recovery(id: string): Promise<Airport> {
+    const recovered = await this.prisma.airport.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return AirportMapper.toDomain(recovered);
   }
 }

@@ -30,6 +30,7 @@ describe('AirportsService', () => {
       findByIataCode: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+      recovery: jest.fn(),
     });
 
     const module: TestingModule = await Test.createTestingModule({
@@ -70,7 +71,7 @@ describe('AirportsService', () => {
       const createSpy = jest.spyOn(mockRepository, 'create');
 
       await expect(service.create(mockAirportData)).rejects.toThrow(
-        'Airport already exists',
+        'Airport with IATA code BSB already exists',
       );
       expect(createSpy).not.toHaveBeenCalled();
     });
