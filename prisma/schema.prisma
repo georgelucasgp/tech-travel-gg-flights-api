@@ -83,23 +83,14 @@ model Flight {
 }
 
 model Itinerary {
-  id                String    @id @default(uuid())
-  departureDatetime DateTime? @map("departure_datetime") @db.Timestamptz
-  arrivalDatetime   DateTime? @map("arrival_datetime") @db.Timestamptz
-  originIata        String?   @map("origin_iata") @db.VarChar(3)
-  destinationIata   String?   @map("destination_iata") @db.VarChar(3)
-  totalDuration     Int?      @map("total_duration_minutes")
-  stops             Int?      @default(0)
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
-  deletedAt         DateTime? @map("deleted_at")
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   flights  ItineraryFlight[]
   bookings Booking[]
 
-  @@index([departureDatetime])
-  @@index([originIata, destinationIata])
-  @@index([originIata, departureDatetime])
   @@map("itineraries")
 }
 
@@ -120,6 +111,7 @@ model ItineraryFlight {
 
 model Booking {
   id          String        @id @default(uuid())
+  code        String        @unique @map("code")
   userId      String        @map("user_id") @db.VarChar(255)
   itineraryId String        @map("itinerary_id")
   status      BookingStatus @default(PENDING)
