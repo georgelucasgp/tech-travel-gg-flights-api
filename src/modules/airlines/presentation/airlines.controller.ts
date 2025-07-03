@@ -9,12 +9,14 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { AirlinesService } from '../application/airlines.service';
 import { AirlineResponseDto } from './dto/airline-response.dto';
 import { CreateAirlineDto } from './dto/create-airline.dto';
 import { UpdateAirlineDto } from './dto/update-airline.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AirlineQueryDto } from './dto/airline-query.dto';
 
 @ApiTags('Airlines')
 @Controller({ path: 'airlines', version: '1' })
@@ -49,8 +51,11 @@ export class AirlinesController {
   @Get()
   @ApiOperation({ summary: 'Get all airlines' })
   @ApiResponse({ status: 200, description: 'Airlines retrieved successfully' })
-  async findAll(): Promise<AirlineResponseDto[]> {
-    const airlines = await this.airlinesService.findAll();
+  async findAll(
+    @Query() query: AirlineQueryDto,
+  ): Promise<AirlineResponseDto[]> {
+    const showDeleted = query.deleted_at === 'true';
+    const airlines = await this.airlinesService.findAll(showDeleted);
     return airlines.map((airline) => new AirlineResponseDto(airline));
   }
 
@@ -81,5 +86,15 @@ export class AirlinesController {
   @ApiResponse({ status: 204, description: 'Airline deleted successfully' })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.airlinesService.remove(id);
+  }
+
+  @Post(':id/recovery')
+  @ApiOperation({ summary: 'Recovery an airline' })
+  @ApiResponse({ status: 200, description: 'Airline recovered successfully' })
+  async recovery(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<AirlineResponseDto> {
+    const airline = await this.airlinesService.recovery(id);
+    return new AirlineResponseDto(airline);
   }
 }

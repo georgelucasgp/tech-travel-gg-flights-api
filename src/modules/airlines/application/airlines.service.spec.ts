@@ -35,6 +35,7 @@ describe('AirlinesService', () => {
       findByIataCode: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+      recovery: jest.fn(),
     });
 
     const module: TestingModule = await Test.createTestingModule({

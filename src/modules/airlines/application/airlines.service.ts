@@ -24,6 +24,12 @@ export class AirlinesService {
     );
 
     if (existingAirline) {
+      if (existingAirline.deletedAt) {
+        throw new ConflictException(
+          `Airline with IATA code ${createAirlineDto.iata_code} is inactive. Use recovery endpoint to reactivate it.`,
+        );
+      }
+
       throw new ConflictException(
         `Airline with IATA code ${createAirlineDto.iata_code} already exists`,
       );
@@ -33,8 +39,8 @@ export class AirlinesService {
     return await this.airlineRepository.create(airline);
   }
 
-  async findAll(): Promise<Airline[]> {
-    return await this.airlineRepository.findAll();
+  async findAll(showDeleted = false): Promise<Airline[]> {
+    return await this.airlineRepository.findAll(showDeleted);
   }
 
   async findOne(id: string): Promise<Airline> {
@@ -42,6 +48,12 @@ export class AirlinesService {
 
     if (!airline) {
       throw new NotFoundException(`Airline with ID ${id} not found`);
+    }
+
+    if (airline.deletedAt) {
+      throw new ConflictException(
+        `Airline with ID ${id} is inactive. Use recovery endpoint to reactivate it.`,
+      );
     }
 
     return airline;
@@ -57,6 +69,12 @@ export class AirlinesService {
       const existingAirline = await this.airlineRepository.findByIataCode(
         updateAirlineDto.iata_code,
       );
+
+      if (existingAirline?.deletedAt) {
+        throw new ConflictException(
+          `Airline with IATA code ${updateAirlineDto.iata_code} is inactive. Use recovery endpoint to reactivate it.`,
+        );
+      }
 
       if (existingAirline && !existingAirline.id.equals(airline.id)) {
         throw new ConflictException(
@@ -85,5 +103,19 @@ export class AirlinesService {
     await this.findOne(id);
 
     await this.airlineRepository.delete(id);
+  }
+
+  async recovery(id: string): Promise<Airline> {
+    const existingAirline = await this.airlineRepository.findById(id);
+
+    if (!existingAirline) {
+      throw new NotFoundException(`Airline with ID ${id} not found`);
+    }
+
+    if (!existingAirline.deletedAt) {
+      throw new ConflictException(`Airline with ID ${id} is already active`);
+    }
+
+    return await this.airlineRepository.recovery(id);
   }
 }
