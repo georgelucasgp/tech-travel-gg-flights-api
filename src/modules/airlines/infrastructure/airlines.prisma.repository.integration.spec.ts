@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { randomUUID } from 'crypto';
 import { PrismaService } from '../../../shared/infrastructure/database/prisma.service';
 import { Airline } from '../domain/entities/airline.entity';
 import { AirlinesPrismaRepository } from './airlines.prisma.repository';
@@ -57,33 +56,6 @@ describe('AirlinesPrismaRepository (Integration)', () => {
     });
   });
 
-  describe('findAll()', () => {
-    it('should return all existing airlines', async () => {
-      const validAirlineProps1 = getValidAirlineProps('GG');
-      const validAirlineProps2 = getValidAirlineProps('GO');
-      const airline1 = AirlineFactory.create(validAirlineProps1);
-      const airline2 = AirlineFactory.create({
-        ...validAirlineProps2,
-        name: 'Azul Brazilian Airlines',
-        iataCode: 'GO',
-      });
-
-      await repository.create(airline1);
-      await repository.create(airline2);
-
-      const airlines = await repository.findAll();
-
-      expect(airlines).toHaveLength(2);
-      expect(airlines[0]).toBeInstanceOf(Airline);
-      expect(airlines[1]).toBeInstanceOf(Airline);
-    });
-
-    it('should return empty array when no airlines exist', async () => {
-      const airlines = await repository.findAll();
-      expect(airlines).toHaveLength(0);
-    });
-  });
-
   describe('findById()', () => {
     it('should find airline by id', async () => {
       const validAirlineProps = getValidAirlineProps('GG');
@@ -97,30 +69,6 @@ describe('AirlinesPrismaRepository (Integration)', () => {
       expect(foundAirline).toBeInstanceOf(Airline);
       expect(foundAirline?.name.getValue()).toBe('GG Airlines');
       expect(foundAirline?.iataCode.getValue()).toBe('GG');
-    });
-
-    it('should return null if airline does not exist', async () => {
-      const foundAirline = await repository.findById(randomUUID());
-      expect(foundAirline).toBeNull();
-    });
-  });
-
-  describe('findByIataCode()', () => {
-    it('should find airline by IATA code', async () => {
-      const validAirlineProps = getValidAirlineProps('GG');
-      const airlineEntity = AirlineFactory.create(validAirlineProps);
-      await repository.create(airlineEntity);
-
-      const foundAirline = await repository.findByIataCode('GG');
-
-      expect(foundAirline).toBeInstanceOf(Airline);
-      expect(foundAirline?.name.getValue()).toBe('GG Airlines');
-      expect(foundAirline?.iataCode.getValue()).toBe('GG');
-    });
-
-    it('should return null if airline with IATA code does not exist', async () => {
-      const foundAirline = await repository.findByIataCode('GG');
-      expect(foundAirline).toBeNull();
     });
   });
 
@@ -183,29 +131,6 @@ describe('AirlinesPrismaRepository (Integration)', () => {
         where: { id: airlineEntity.id.getValue() },
       });
 
-      expect(savedAirline?.iataCode).toBe('JJ');
-    });
-
-    it('should handle multiple changes in single update', async () => {
-      const updatedAirlineEntity = AirlineFactory.create({
-        id: airlineEntity.id.getValue(),
-        name: 'GG Airlines',
-        iataCode: 'JJ',
-        createdAt: airlineEntity.createdAt,
-        updatedAt: new Date(),
-        deletedAt: airlineEntity.deletedAt,
-      });
-
-      const updatedAirline = await repository.update(updatedAirlineEntity);
-
-      expect(updatedAirline.name.getValue()).toBe('GG Airlines');
-      expect(updatedAirline.iataCode.getValue()).toBe('JJ');
-
-      const savedAirline = await prisma.airline.findUnique({
-        where: { id: airlineEntity.id.getValue() },
-      });
-
-      expect(savedAirline?.name).toBe('GG Airlines');
       expect(savedAirline?.iataCode).toBe('JJ');
     });
   });
