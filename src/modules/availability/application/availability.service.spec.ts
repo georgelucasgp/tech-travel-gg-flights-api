@@ -110,7 +110,7 @@ describe('AvailabilityService', () => {
           origin: 'BSB',
           destination: 'GIG',
           date: new Date('2025-07-03'),
-          airlineCodes: ['LA'],
+          airline_codes: ['LA'],
         });
       });
 
@@ -125,7 +125,7 @@ describe('AvailabilityService', () => {
           origin: 'BSB',
           destination: 'GIG',
           date: new Date('2025-07-03'),
-          airlineCodes: undefined,
+          airline_codes: undefined,
         });
       });
     });

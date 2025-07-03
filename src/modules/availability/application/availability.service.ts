@@ -69,7 +69,7 @@ export class AvailabilityService {
         origin,
         destination,
         date,
-        airlineCodes: preferredAirlines,
+        airline_codes: preferredAirlines,
       });
 
     for (const flight of directFlights) {
@@ -106,7 +106,7 @@ export class AvailabilityService {
         origin,
         destination: '',
         date,
-        airlineCodes: preferredAirlines,
+        airline_codes: preferredAirlines,
       });
 
     for (const firstFlight of firstLegFlights) {
@@ -119,7 +119,7 @@ export class AvailabilityService {
           origin: connectionAirport,
           destination,
           date,
-          airlineCodes: preferredAirlines,
+          airline_codes: preferredAirlines,
         });
 
       for (const secondFlight of secondLegFlights) {
