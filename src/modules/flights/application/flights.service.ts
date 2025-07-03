@@ -21,12 +21,20 @@ export class FlightsService {
 
   async create(createDto: CreateFlightDto): Promise<Flight> {
     const existingFlight = await this.flightRepository.findByFlightNumber(
-      createDto.flightNumber,
+      createDto.flight_number,
     );
     if (existingFlight) {
       throw new BadRequestException('Flight already exists');
     }
-    const flight = FlightFactory.create(createDto);
+    const flight = FlightFactory.create({
+      flight_number: createDto.flight_number,
+      airline_id: createDto.airline_id,
+      origin_iata: createDto.origin_iata,
+      destination_iata: createDto.destination_iata,
+      departure_datetime: createDto.departure_datetime,
+      arrival_datetime: createDto.arrival_datetime,
+      frequency: createDto.frequency,
+    });
     return await this.flightRepository.create(flight);
   }
 
@@ -36,30 +44,30 @@ export class FlightsService {
       throw new NotFoundException('Flight not found');
     }
 
-    if (updateDto.flightNumber) {
-      flight.changeFlightNumber(new FlightNumber(updateDto.flightNumber));
+    if (updateDto.flight_number) {
+      flight.changeFlightNumber(new FlightNumber(updateDto.flight_number));
     }
 
-    if (updateDto.airlineId) {
-      flight.changeAirline(updateDto.airlineId);
+    if (updateDto.airline_id) {
+      flight.changeAirline(updateDto.airline_id);
     }
 
-    if (updateDto.originIata || updateDto.destinationIata) {
-      const newOriginIata = updateDto.originIata
-        ? new IataCode(updateDto.originIata)
+    if (updateDto.origin_iata || updateDto.destination_iata) {
+      const newOriginIata = updateDto.origin_iata
+        ? new IataCode(updateDto.origin_iata)
         : flight.originIata;
-      const newDestinationIata = updateDto.destinationIata
-        ? new IataCode(updateDto.destinationIata)
+      const newDestinationIata = updateDto.destination_iata
+        ? new IataCode(updateDto.destination_iata)
         : flight.destinationIata;
 
       flight.changeRoute(newOriginIata, newDestinationIata);
     }
 
-    if (updateDto.departureDatetime || updateDto.arrivalDatetime) {
+    if (updateDto.departure_datetime || updateDto.arrival_datetime) {
       const newDepartureDatetime =
-        updateDto.departureDatetime || flight.departureDatetime;
+        updateDto.departure_datetime || flight.departureDatetime;
       const newArrivalDatetime =
-        updateDto.arrivalDatetime || flight.arrivalDatetime;
+        updateDto.arrival_datetime || flight.arrivalDatetime;
 
       flight.changeSchedule(newDepartureDatetime, newArrivalDatetime);
     }

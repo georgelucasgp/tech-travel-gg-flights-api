@@ -36,12 +36,12 @@ describe('FlightsPrismaRepository (Integration)', () => {
   });
 
   const getValidFlightProps = () => ({
-    flightNumber: 'LA3456',
-    airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-    originIata: 'IMP',
-    destinationIata: 'BSB',
-    departureDatetime: new Date('2025-08-15T22:00:00Z'),
-    arrivalDatetime: new Date('2025-08-16T00:30:00Z'),
+    flight_number: 'LA3456',
+    airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+    origin_iata: 'IMP',
+    destination_iata: 'BSB',
+    departure_datetime: new Date('2025-08-15T22:00:00Z'),
+    arrival_datetime: new Date('2025-08-16T00:30:00Z'),
     frequency: [1, 3, 5],
   });
 
@@ -68,7 +68,7 @@ describe('FlightsPrismaRepository (Integration)', () => {
     it('should create flight with valid frequency', async () => {
       const flightFactoryProps: FlightFactoryProps = {
         ...getValidFlightProps(),
-        flightNumber: 'AD4050',
+        flight_number: 'AD4050',
         frequency: [0, 1, 2, 3, 4, 5, 6],
       };
 
@@ -89,7 +89,7 @@ describe('FlightsPrismaRepository (Integration)', () => {
       const flight1 = FlightFactory.create(validFlightProps);
       const flight2 = FlightFactory.create({
         ...validFlightProps,
-        flightNumber: 'AZ4050',
+        flight_number: 'AZ4050',
       });
 
       await repository.create(flight1);

@@ -23,7 +23,7 @@ export class CreateFlightDto {
   })
   @IsString()
   @IsNotEmpty()
-  flightNumber: string;
+  flight_number: string;
 
   @ApiProperty({
     description: 'Airline ID (UUID)',
@@ -31,7 +31,7 @@ export class CreateFlightDto {
   })
   @IsUUID()
   @IsNotEmpty()
-  airlineId: string;
+  airline_id: string;
 
   @ApiProperty({
     description: 'IATA code of the origin airport (3 uppercase letters)',
@@ -43,7 +43,7 @@ export class CreateFlightDto {
   @Matches(IATA_CODE_REGEX, {
     message: 'Origin IATA code must contain only uppercase letters',
   })
-  originIata: string;
+  origin_iata: string;
 
   @ApiProperty({
     description: 'IATA code of the destination airport (3 uppercase letters)',
@@ -57,7 +57,7 @@ export class CreateFlightDto {
   @Matches(IATA_CODE_REGEX, {
     message: 'Destination IATA code must contain only uppercase letters',
   })
-  destinationIata: string;
+  destination_iata: string;
 
   @ApiProperty({
     description: 'Departure date and time in ISO 8601 UTC format',
@@ -66,7 +66,7 @@ export class CreateFlightDto {
   @Type(() => Date)
   @IsDate()
   @IsNotEmpty()
-  departureDatetime: Date;
+  departure_datetime: Date;
 
   @ApiProperty({
     description: 'Arrival date and time in ISO 8601 UTC format',
@@ -75,7 +75,7 @@ export class CreateFlightDto {
   @Type(() => Date)
   @IsDate()
   @IsNotEmpty()
-  arrivalDatetime: Date;
+  arrival_datetime: Date;
 
   @ApiProperty({
     description: 'Flight frequency (array of weekdays, 0=Sunday, 6=Saturday)',

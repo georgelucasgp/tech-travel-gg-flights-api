@@ -8,12 +8,12 @@ import {
 
 export type FlightFactoryProps = {
   id?: string;
-  flightNumber: string;
-  airlineId: string;
-  originIata: string;
-  destinationIata: string;
-  departureDatetime: Date;
-  arrivalDatetime: Date;
+  flight_number: string;
+  airline_id: string;
+  origin_iata: string;
+  destination_iata: string;
+  departure_datetime: Date;
+  arrival_datetime: Date;
   frequency: number[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -24,12 +24,12 @@ export class FlightFactory {
   static create(props: FlightFactoryProps): Flight {
     return Flight.create({
       id: props.id ? new FlightId(props.id) : FlightId.create(),
-      flightNumber: new FlightNumber(props.flightNumber),
-      airlineId: props.airlineId,
-      originIata: new IataCode(props.originIata),
-      destinationIata: new IataCode(props.destinationIata),
-      departureDatetime: props.departureDatetime,
-      arrivalDatetime: props.arrivalDatetime,
+      flightNumber: new FlightNumber(props.flight_number),
+      airlineId: props.airline_id,
+      originIata: new IataCode(props.origin_iata),
+      destinationIata: new IataCode(props.destination_iata),
+      departureDatetime: props.departure_datetime,
+      arrivalDatetime: props.arrival_datetime,
       frequency: new Frequency(props.frequency),
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),

@@ -10,14 +10,14 @@ describe('Flight Entity', () => {
   const createFlight = (params: Partial<FlightFactoryProps> = {}): Flight => {
     return FlightFactory.create({
       id: params.id || randomUUID(),
-      flightNumber: params.flightNumber || 'LA3456',
-      airlineId: params.airlineId || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-      originIata: params.originIata || 'BSB',
-      destinationIata: params.destinationIata || 'CGH',
-      departureDatetime:
-        params.departureDatetime || new Date('2025-07-01T09:30:00Z'),
-      arrivalDatetime:
-        params.arrivalDatetime || new Date('2025-07-01T10:30:00Z'),
+      flight_number: params.flight_number || 'LA3456',
+      airline_id: params.airline_id || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+      origin_iata: params.origin_iata || 'BSB',
+      destination_iata: params.destination_iata || 'CGH',
+      departure_datetime:
+        params.departure_datetime || new Date('2025-07-01T09:30:00Z'),
+      arrival_datetime:
+        params.arrival_datetime || new Date('2025-07-01T10:30:00Z'),
       frequency: params.frequency || [1, 2, 3, 4, 5],
       createdAt: params.createdAt || new Date(),
       updatedAt: params.updatedAt || new Date(),

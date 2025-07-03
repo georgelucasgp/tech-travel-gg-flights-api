@@ -15,12 +15,12 @@ describe('FlightsService', () => {
   const flightId = randomUUID();
 
   const mockFlightData: CreateFlightDto = {
-    flightNumber: 'LA3000',
-    airlineId,
-    originIata: 'IMP',
-    destinationIata: 'BSB',
-    departureDatetime: new Date('2025-10-01T10:00:00Z'),
-    arrivalDatetime: new Date('2025-10-01T12:00:00Z'),
+    flight_number: 'LA3000',
+    airline_id: airlineId,
+    origin_iata: 'IMP',
+    destination_iata: 'BSB',
+    departure_datetime: new Date('2025-10-01T10:00:00Z'),
+    arrival_datetime: new Date('2025-10-01T12:00:00Z'),
     frequency: [1, 2, 3],
   };
 
@@ -96,7 +96,7 @@ describe('FlightsService', () => {
     it('should throw error when flight data is invalid', async () => {
       const invalidDto: CreateFlightDto = {
         ...mockFlightData,
-        flightNumber: 'INVALID_FLIGHT_NUMBER_TOO_LONG',
+        flight_number: 'INVALID_FLIGHT_NUMBER_TOO_LONG',
       };
 
       await expect(service.create(invalidDto)).rejects.toBeDefined();
@@ -174,12 +174,12 @@ describe('FlightsService', () => {
         .mockResolvedValue(mockFlight);
 
       const updateDto: UpdateFlightDto = {
-        flightNumber: 'LA4000',
-        airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-        originIata: 'GRU',
-        destinationIata: 'CGH',
-        departureDatetime: new Date('2025-11-01T14:00:00Z'),
-        arrivalDatetime: new Date('2025-11-01T16:00:00Z'),
+        flight_number: 'LA4000',
+        airline_id: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+        origin_iata: 'GRU',
+        destination_iata: 'CGH',
+        departure_datetime: new Date('2025-11-01T14:00:00Z'),
+        arrival_datetime: new Date('2025-11-01T16:00:00Z'),
         frequency: [0, 6],
       };
 
@@ -214,8 +214,8 @@ describe('FlightsService', () => {
         .mockResolvedValue(mockFlight);
 
       const updateDto: UpdateFlightDto = {
-        originIata: 'GRU',
-        destinationIata: 'SDU',
+        origin_iata: 'GRU',
+        destination_iata: 'SDU',
       };
 
       const result = await service.update(flightId, updateDto);
@@ -232,8 +232,8 @@ describe('FlightsService', () => {
         .mockResolvedValue(mockFlight);
 
       const updateDto: UpdateFlightDto = {
-        departureDatetime: new Date('2025-12-01T08:00:00Z'),
-        arrivalDatetime: new Date('2025-12-01T10:00:00Z'),
+        departure_datetime: new Date('2025-12-01T08:00:00Z'),
+        arrival_datetime: new Date('2025-12-01T10:00:00Z'),
       };
 
       const result = await service.update(flightId, updateDto);
@@ -273,12 +273,12 @@ describe('FlightsService', () => {
         .mockResolvedValue(mockFlight);
 
       const result = await service.findByFlightNumber(
-        mockFlightData.flightNumber,
+        mockFlightData.flight_number,
       );
 
       expect(findByFlightNumberSpy).toHaveBeenCalledTimes(1);
       expect(findByFlightNumberSpy).toHaveBeenCalledWith(
-        mockFlightData.flightNumber,
+        mockFlightData.flight_number,
       );
       expect(result).toBe(mockFlight);
     });
@@ -287,7 +287,7 @@ describe('FlightsService', () => {
       jest.spyOn(mockRepository, 'findByFlightNumber').mockResolvedValue(null);
 
       await expect(
-        service.findByFlightNumber(mockFlightData.flightNumber),
+        service.findByFlightNumber(mockFlightData.flight_number),
       ).rejects.toThrow('Flight not found');
     });
 
@@ -296,7 +296,7 @@ describe('FlightsService', () => {
       jest.spyOn(mockRepository, 'findByFlightNumber').mockRejectedValue(error);
 
       await expect(
-        service.findByFlightNumber(mockFlightData.flightNumber),
+        service.findByFlightNumber(mockFlightData.flight_number),
       ).rejects.toThrow('Database error');
     });
   });
