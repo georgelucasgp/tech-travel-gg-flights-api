@@ -104,11 +104,24 @@ export class IntegrationTestHelper {
       this.prisma.itineraryFlight.deleteMany(),
       this.prisma.itinerary.deleteMany(),
       this.prisma.flight.deleteMany(),
+      this.prisma.user.deleteMany(),
+    ]);
+  }
+
+  async cleanupAll(): Promise<void> {
+    await this.prisma.$transaction([
+      this.prisma.booking.deleteMany(),
+      this.prisma.itineraryFlight.deleteMany(),
+      this.prisma.itinerary.deleteMany(),
+      this.prisma.flight.deleteMany(),
+      this.prisma.user.deleteMany(),
+      this.prisma.airline.deleteMany(),
+      this.prisma.airport.deleteMany(),
     ]);
   }
 
   async teardown(): Promise<void> {
-    await this.cleanup();
+    await this.cleanupAll();
     await this.prisma.$disconnect();
   }
 
