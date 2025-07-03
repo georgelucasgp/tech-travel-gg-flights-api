@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { validate as uuidValidate } from 'uuid';
 
@@ -19,15 +20,15 @@ export class ItineraryId {
 
   private validate(value: string): void {
     if (typeof value !== 'string') {
-      throw new Error('ItineraryId must be a string');
+      throw new BadRequestException('ItineraryId must be a string');
     }
 
     if (!value) {
-      throw new Error('ItineraryId cannot be empty');
+      throw new BadRequestException('ItineraryId cannot be empty');
     }
 
     if (!uuidValidate(value)) {
-      throw new Error('ItineraryId must be a valid UUID');
+      throw new BadRequestException('ItineraryId must be a valid UUID');
     }
   }
 

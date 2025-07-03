@@ -45,8 +45,7 @@ export class FlightsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a flight by ID' })
   @ApiResponse({ status: 200, description: 'Flight retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'Flight not found' })
-  async findOne(
+  async findById(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FlightResponseDto> {
     const flight = await this.flightsService.findById(id);
@@ -59,7 +58,6 @@ export class FlightsController {
   @Put(':id')
   @ApiOperation({ summary: 'Update a flight' })
   @ApiResponse({ status: 200, description: 'Flight updated successfully' })
-  @ApiResponse({ status: 404, description: 'Flight not found' })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateFlightDto: UpdateFlightDto,
@@ -72,7 +70,6 @@ export class FlightsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a flight' })
   @ApiResponse({ status: 204, description: 'Flight deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Flight not found' })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.flightsService.delete(id);
   }

@@ -40,10 +40,13 @@ describe('ItinerariesService', () => {
     frequency: [1, 2, 3, 4, 5],
   });
 
-  const mockItinerary = ItineraryFactory.createFromFlights([
-    mockFlightOne,
-    mockFlightTwo,
-  ]);
+  const mockItinerary = ItineraryFactory.create({
+    id: itineraryId,
+    flights: [mockFlightOne, mockFlightTwo],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: null,
+  });
 
   beforeEach(async () => {
     const mockItineraryRepositoryFactory = () => ({

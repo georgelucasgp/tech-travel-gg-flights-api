@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Flight } from '../../../flights/domain/entities/flight.entity';
 import { ItineraryId } from '../value-objects';
 
@@ -32,7 +33,7 @@ export class Itinerary {
 
   private static validateFlightsSequence(flights: Flight[]): void {
     if (!flights || flights.length === 0) {
-      throw new Error('Itinerary must have at least one flight');
+      throw new BadRequestException('Itinerary must have at least one flight');
     }
 
     if (flights.length === 1) {
@@ -57,7 +58,7 @@ export class Itinerary {
       currentFlight.destinationIata.getValue() !==
       nextFlight.originIata.getValue()
     ) {
-      throw new Error(
+      throw new BadRequestException(
         `Invalid route sequence: Flight ${currentFlight.flightNumber.getValue()} destination (${currentFlight.destinationIata.getValue()}) must match next flight ${nextFlight.flightNumber.getValue()} origin (${nextFlight.originIata.getValue()})`,
       );
     }
@@ -68,7 +69,7 @@ export class Itinerary {
     nextFlight: Flight,
   ): void {
     if (nextFlight.departureDatetime <= currentFlight.arrivalDatetime) {
-      throw new Error(
+      throw new BadRequestException(
         `Invalid temporal sequence: Next flight ${nextFlight.flightNumber.getValue()} departure (${nextFlight.departureDatetime.toISOString()}) must be after current flight ${currentFlight.flightNumber.getValue()} arrival (${currentFlight.arrivalDatetime.toISOString()})`,
       );
     }
@@ -85,7 +86,7 @@ export class Itinerary {
     const connectionTimeMinutes = connectionTimeMs / (1000 * 60);
 
     if (connectionTimeMinutes < MINIMUM_CONNECTION_TIME_MINUTES) {
-      throw new Error(
+      throw new BadRequestException(
         `Insufficient connection time: ${connectionTimeMinutes.toFixed(1)} minutes between flight ${currentFlight.flightNumber.getValue()} and ${nextFlight.flightNumber.getValue()}. Minimum required: ${MINIMUM_CONNECTION_TIME_MINUTES} minutes`,
       );
     }

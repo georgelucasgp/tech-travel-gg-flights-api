@@ -12,6 +12,12 @@ import { FlightsPrismaRepository } from './infrastructure/flights.prisma.reposit
       useClass: FlightsPrismaRepository,
     },
   ],
-  exports: [FlightsService],
+  exports: [
+    FlightsService,
+    {
+      provide: 'IFlightRepository',
+      useClass: FlightsPrismaRepository,
+    },
+  ],
 })
 export class FlightsModule {}

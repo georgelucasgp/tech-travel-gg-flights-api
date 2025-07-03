@@ -31,7 +31,9 @@ export class ItinerariesService {
     );
 
     try {
-      const itinerary = ItineraryFactory.createFromFlights(flights);
+      const itinerary = ItineraryFactory.create({
+        flights,
+      });
       return await this.itineraryRepository.create(itinerary);
     } catch (error) {
       if (error instanceof Error) {

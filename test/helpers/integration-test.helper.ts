@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../src/shared/infrastructure/database/prisma.service';
 import { execSync } from 'child_process';
 
@@ -17,7 +18,9 @@ export class IntegrationTestHelper {
 
   async setup(): Promise<void> {
     if (!process.env.DATABASE_URL) {
-      throw new Error('DATABASE_URL not found. Make sure .env.test is loaded.');
+      throw new BadRequestException(
+        'DATABASE_URL not found. Make sure .env.test is loaded.',
+      );
     }
 
     if (!globalSeedDataCreated) {
@@ -43,6 +46,7 @@ export class IntegrationTestHelper {
       iataCode: 'IMP',
       city: 'Imperatriz',
       country: 'Brasil',
+      timezone: 'America/Sao_Paulo',
     });
 
     await this.createAirport({
@@ -51,6 +55,7 @@ export class IntegrationTestHelper {
       iataCode: 'BSB',
       city: 'Brasília',
       country: 'Brasil',
+      timezone: 'America/Sao_Paulo',
     });
 
     await this.createAirport({
@@ -59,6 +64,7 @@ export class IntegrationTestHelper {
       iataCode: 'CGH',
       city: 'São Paulo',
       country: 'Brasil',
+      timezone: 'America/Sao_Paulo',
     });
 
     await this.createAirline({
