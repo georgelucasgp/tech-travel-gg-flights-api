@@ -34,7 +34,7 @@ describe('AirportsPrismaRepository (Integration)', () => {
 
   const getValidAirportProps = (iataCode = 'BSB') => ({
     name: 'Aeroporto Internacional de Brasília',
-    iataCode,
+    iata_code: iataCode,
     city: 'Brasília',
     country: 'Brasil',
     timezone: 'America/Sao_Paulo',

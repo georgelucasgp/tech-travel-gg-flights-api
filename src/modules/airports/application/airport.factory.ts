@@ -11,7 +11,7 @@ import {
 export type AirportFactoryProps = {
   id?: string;
   name: string;
-  iataCode: string;
+  iata_code: string;
   city: string;
   country: string;
   timezone: string;
@@ -25,7 +25,7 @@ export class AirportFactory {
     return Airport.create({
       id: props.id ? AirportId.create(props.id) : AirportId.create(),
       name: new AirportName(props.name),
-      iataCode: new AirportIataCode(props.iataCode),
+      iataCode: new AirportIataCode(props.iata_code),
       city: new AirportCity(props.city),
       country: new AirportCountry(props.country),
       timezone: new AirportTimezone(props.timezone),

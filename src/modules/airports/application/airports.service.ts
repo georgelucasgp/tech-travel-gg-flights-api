@@ -19,7 +19,7 @@ export class AirportsService {
 
   async create(createDto: CreateAirportDto): Promise<Airport> {
     const existingAirport = await this.airportRepository.findByIataCode(
-      createDto.iataCode,
+      createDto.iata_code,
     );
     if (existingAirport) {
       throw new BadRequestException('Airport already exists');
@@ -44,11 +44,11 @@ export class AirportsService {
     const existingAirport = await this.findById(id);
 
     if (
-      updateDto.iataCode &&
-      updateDto.iataCode !== existingAirport.iataCode.getValue()
+      updateDto.iata_code &&
+      updateDto.iata_code !== existingAirport.iataCode.getValue()
     ) {
       const airportWithSameIata = await this.airportRepository.findByIataCode(
-        updateDto.iataCode,
+        updateDto.iata_code,
       );
       if (airportWithSameIata) {
         throw new BadRequestException(
@@ -60,7 +60,7 @@ export class AirportsService {
     const updatedAirport = AirportFactory.create({
       id: existingAirport.id.getValue(),
       name: updateDto.name || existingAirport.name.getValue(),
-      iataCode: updateDto.iataCode || existingAirport.iataCode.getValue(),
+      iata_code: updateDto.iata_code || existingAirport.iataCode.getValue(),
       city: updateDto.city || existingAirport.city.getValue(),
       country: updateDto.country || existingAirport.country.getValue(),
       timezone: updateDto.timezone || existingAirport.timezone.getValue(),

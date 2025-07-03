@@ -22,7 +22,7 @@ export class CreateAirportDto {
   @Matches(/^[A-Z]{3}$/, {
     message: 'IATA code must be exactly 3 uppercase letters',
   })
-  iataCode: string;
+  iata_code: string;
 
   @ApiProperty({
     description: 'City where the airport is located',

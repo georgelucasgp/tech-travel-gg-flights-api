@@ -12,7 +12,7 @@ describe('Airport Entity', () => {
     return AirportFactory.create({
       id: params.id || randomUUID(),
       name: params.name || 'Aeroporto Internacional de Brasília',
-      iataCode: params.iataCode || 'BSB',
+      iata_code: params.iata_code || 'BSB',
       city: params.city || 'Brasília',
       country: params.country || 'Brasil',
       timezone: params.timezone || 'America/Sao_Paulo',

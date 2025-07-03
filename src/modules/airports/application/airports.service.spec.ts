@@ -14,7 +14,7 @@ describe('AirportsService', () => {
 
   const mockAirportData: CreateAirportDto = {
     name: 'Aeroporto Internacional de Brasília',
-    iataCode: 'BSB',
+    iata_code: 'BSB',
     city: 'Brasília',
     country: 'Brasil',
     timezone: 'America/Sao_Paulo',
@@ -136,7 +136,7 @@ describe('AirportsService', () => {
       const updatedAirport = AirportFactory.create({
         id: airportId,
         name: updateDto.name!,
-        iataCode: 'BSB',
+        iata_code: 'BSB',
         city: updateDto.city!,
         country: 'Brasil',
         timezone: 'America/Sao_Paulo',
@@ -168,11 +168,11 @@ describe('AirportsService', () => {
       const airportId = randomUUID();
       const updateDtoWithIata: UpdateAirportDto = {
         ...updateDto,
-        iataCode: 'GRU',
+        iata_code: 'GRU',
       };
       const anotherAirport = AirportFactory.create({
         name: 'Guarulhos Airport',
-        iataCode: 'GRU',
+        iata_code: 'GRU',
         city: 'São Paulo',
         country: 'Brasil',
         timezone: 'America/Sao_Paulo',
@@ -194,7 +194,7 @@ describe('AirportsService', () => {
       const airportId = randomUUID();
       const updateDtoWithSameIata: UpdateAirportDto = {
         ...updateDto,
-        iataCode: 'BSB',
+        iata_code: 'BSB',
       };
 
       jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockAirport);
