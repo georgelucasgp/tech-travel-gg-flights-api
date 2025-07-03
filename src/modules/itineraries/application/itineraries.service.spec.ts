@@ -21,7 +21,7 @@ describe('ItinerariesService', () => {
   const mockFlightOne = FlightFactory.create({
     id: flightOneId,
     flightNumber: 'LA3456',
-    airlineId: 'airline-1',
+    airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
     originIata: 'IMP',
     destinationIata: 'BSB',
     departureDatetime: new Date('2025-07-01T09:30:00Z'),
@@ -32,7 +32,7 @@ describe('ItinerariesService', () => {
   const mockFlightTwo = FlightFactory.create({
     id: flightTwoId,
     flightNumber: 'LA7890',
-    airlineId: 'airline-2',
+    airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
     originIata: 'BSB',
     destinationIata: 'GRU',
     departureDatetime: new Date('2025-07-01T11:15:00Z'),
@@ -128,7 +128,7 @@ describe('ItinerariesService', () => {
       const invalidFlight = FlightFactory.create({
         id: flightTwoId,
         flightNumber: 'LA7890',
-        airlineId: 'airline-2',
+        airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
         originIata: 'IMP',
         destinationIata: 'GRU',
         departureDatetime: new Date('2025-07-01T11:15:00Z'),

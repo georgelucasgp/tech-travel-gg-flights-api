@@ -6,14 +6,14 @@ describe('ItineraryId', () => {
       const itineraryId = ItineraryId.create();
 
       expect(itineraryId).toBeInstanceOf(ItineraryId);
-      expect(itineraryId.value).toBeDefined();
+      expect(itineraryId.getValue()).toBeDefined();
     });
 
     it('should create an ItineraryId with the provided valid UUID', () => {
       const validUuid = '550e8400-e29b-41d4-a716-446655440000';
       const itineraryId = ItineraryId.create(validUuid);
 
-      expect(itineraryId.value).toBe(validUuid);
+      expect(itineraryId.getValue()).toBe(validUuid);
     });
 
     it('should throw an error for empty value', () => {

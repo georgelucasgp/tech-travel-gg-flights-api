@@ -12,7 +12,7 @@ describe('Itinerary Entity', () => {
   ): Flight => {
     return FlightFactory.create({
       flightNumber: params.flightNumber || 'LA3456',
-      airlineId: params.airlineId || 'airline-1',
+      airlineId: params.airlineId || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
       originIata: params.originIata || 'BSB',
       destinationIata: params.destinationIata || 'CGH',
       departureDatetime:
@@ -31,7 +31,7 @@ describe('Itinerary Entity', () => {
   ): Flight => {
     return FlightFactory.create({
       flightNumber: params.flightNumber || 'LA7890',
-      airlineId: params.airlineId || 'airline-2',
+      airlineId: params.airlineId || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
       originIata: params.originIata || 'CGH',
       destinationIata: params.destinationIata || 'GIG',
       departureDatetime:

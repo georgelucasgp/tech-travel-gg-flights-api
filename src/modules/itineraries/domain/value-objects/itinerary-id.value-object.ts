@@ -13,7 +13,7 @@ export class ItineraryId {
     return new ItineraryId(value!);
   }
 
-  get value(): string {
+  getValue(): string {
     return this._value;
   }
 
