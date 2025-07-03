@@ -13,6 +13,8 @@ import { HttpExceptionFilter } from '../src/shared/infrastructure/filters/http-e
 import { UpdateFlightDto } from 'src/modules/flights/presentation/dto/update-flight.dto';
 import { CreateFlightDto } from 'src/modules/flights/presentation/dto/create-flight.dto';
 
+jest.setTimeout(30000);
+
 describe('FlightsController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
@@ -62,7 +64,7 @@ describe('FlightsController (e2e)', () => {
   });
 
   const getValidCreateFlightDto = (): CreateFlightDto => ({
-    flight_number: 'LA3456',
+    flight_number: 'LA3451',
     airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
     origin_iata: 'IMP',
     destination_iata: 'BSB',
@@ -82,7 +84,7 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: expect.any(String) as string,
-        flight_number: 'LA3456',
+        flight_number: 'LA3451',
         airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
         origin_iata: 'IMP',
         destination_iata: 'BSB',
@@ -195,7 +197,7 @@ describe('FlightsController (e2e)', () => {
 
     it('should filter by airline code', async () => {
       const response = await request(app.getHttpServer())
-        .get('/api/v1/flights?airlineCode=LA')
+        .get('/api/v1/flights?airline_code=LA')
         .expect(200);
 
       expect(response.body).toHaveLength(2);
@@ -203,7 +205,7 @@ describe('FlightsController (e2e)', () => {
 
     it('should combine multiple filters', async () => {
       const response = await request(app.getHttpServer())
-        .get('/api/v1/flights?origin=BSB&destination=CGH&airlineCode=LA')
+        .get('/api/v1/flights?origin=BSB&destination=CGH&airline_code=LA')
         .expect(200);
 
       expect(response.body).toHaveLength(1);
@@ -229,7 +231,7 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        flight_number: 'LA3456',
+        flight_number: 'LA3451',
         origin_iata: 'IMP',
         destination_iata: 'BSB',
       });

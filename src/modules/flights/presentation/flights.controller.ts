@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Query,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { FlightsService } from '../application/flights.service';
 import { CreateFlightDto } from './dto/create-flight.dto';
@@ -146,7 +147,9 @@ export class FlightsController {
       },
     },
   })
-  async findById(@Param('id') id: string): Promise<FlightResponseDto> {
+  async findById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<FlightResponseDto> {
     const flight = await this.flightsService.findById(id);
     if (!flight) {
       throw new NotFoundException('Flight not found');
@@ -192,7 +195,7 @@ export class FlightsController {
     },
   })
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateFlightDto: UpdateFlightDto,
   ): Promise<FlightResponseDto> {
     const flight = await this.flightsService.update(id, updateFlightDto);
@@ -211,7 +214,7 @@ export class FlightsController {
     status: 204,
     description: 'Flight deleted successfully',
   })
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     await this.flightsService.delete(id);
   }
 
@@ -241,7 +244,9 @@ export class FlightsController {
       },
     },
   })
-  async recovery(@Param('id') id: string): Promise<FlightResponseDto> {
+  async recovery(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<FlightResponseDto> {
     const flight = await this.flightsService.recovery(id);
     return FlightResponseDto.fromEntity(flight);
   }

@@ -41,7 +41,7 @@ export class IntegrationTestHelper {
 
   private async createSeedData(): Promise<void> {
     await this.createAirport({
-      id: '8f9c69a7-8f9f-4b4e-8d8b-2e9a2b3c1b2a',
+      id: 'd7a8b1c2-e9f0-4a3b-b2a7-5c9e1f8a9d2f',
       name: 'Aeroporto de Imperatriz',
       iataCode: 'IMP',
       city: 'Imperatriz',
@@ -50,7 +50,7 @@ export class IntegrationTestHelper {
     });
 
     await this.createAirport({
-      id: '9g8d7f6e-5c4b-3a2b-1d0c-9f8e7d6c5b4a',
+      id: 'f4c9a6b1-83d2-4e09-9ba7-2e1b5c7a9d30',
       name: 'Aeroporto de Brasília',
       iataCode: 'BSB',
       city: 'Brasília',
@@ -59,7 +59,7 @@ export class IntegrationTestHelper {
     });
 
     await this.createAirport({
-      id: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+      id: 'a5b3f9e2-1764-4b38-a1c2-b6ef9d8a7f53',
       name: 'Aeroporto de Congonhas',
       iataCode: 'CGH',
       city: 'São Paulo',
