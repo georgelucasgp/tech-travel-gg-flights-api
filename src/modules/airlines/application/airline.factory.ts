@@ -9,7 +9,7 @@ import {
 export type AirlineFactoryProps = {
   id?: string;
   name: string;
-  iataCode: string;
+  iata_code: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
@@ -21,7 +21,7 @@ export class AirlineFactory {
     return Airline.create({
       id: props.id ? new AirlineId(props.id) : AirlineId.create(),
       name: new AirlineName(props.name),
-      iataCode: new AirlineIataCode(props.iataCode),
+      iataCode: new AirlineIataCode(props.iata_code),
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
       deletedAt: props.deletedAt ?? null,

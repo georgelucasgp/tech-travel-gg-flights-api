@@ -16,7 +16,7 @@ describe('AirlinesService', () => {
 
   const mockAirlineData: CreateAirlineDto = {
     name: 'LATAM Airlines',
-    iataCode: 'LA',
+    iata_code: 'LA',
   };
 
   const mockAirline = AirlineFactory.create({
@@ -97,7 +97,7 @@ describe('AirlinesService', () => {
     it('should throw error when airline data is invalid', async () => {
       const invalidDto: CreateAirlineDto = {
         name: '',
-        iataCode: 'INVALID',
+        iata_code: 'INVALID',
       };
 
       await expect(service.create(invalidDto)).rejects.toBeDefined();
@@ -170,7 +170,7 @@ describe('AirlinesService', () => {
   describe('update', () => {
     const updateDto: UpdateAirlineDto = {
       name: 'LATAM Airlines Updated',
-      iataCode: 'LU',
+      iata_code: 'LU',
     };
 
     it('should update airline successfully with all fields', async () => {
@@ -216,7 +216,7 @@ describe('AirlinesService', () => {
 
     it('should update only IATA code when only IATA code is provided', async () => {
       const partialUpdateDto: UpdateAirlineDto = {
-        iataCode: 'NU',
+        iata_code: 'NU',
       };
 
       jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockAirline);
@@ -247,7 +247,7 @@ describe('AirlinesService', () => {
       const existingAirline = AirlineFactory.create({
         id: randomUUID(),
         name: 'Another Airline',
-        iataCode: 'LU',
+        iata_code: 'LU',
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
@@ -268,7 +268,7 @@ describe('AirlinesService', () => {
     it('should allow update with same IATA code (no change)', async () => {
       const sameIataUpdateDto: UpdateAirlineDto = {
         name: 'Updated Name',
-        iataCode: 'LA',
+        iata_code: 'LA',
       };
 
       jest.spyOn(mockRepository, 'findById').mockResolvedValue(mockAirline);

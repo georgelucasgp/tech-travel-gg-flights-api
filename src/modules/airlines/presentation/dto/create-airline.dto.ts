@@ -21,5 +21,5 @@ export class CreateAirlineDto {
   @Matches(/^[A-Z]{2}$/, {
     message: 'IATA code must be exactly 2 uppercase letters',
   })
-  iataCode: string;
+  iata_code: string;
 }

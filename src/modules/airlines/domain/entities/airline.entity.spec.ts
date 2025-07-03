@@ -13,7 +13,7 @@ describe('Airline Entity', () => {
     return AirlineFactory.create({
       id: params.id || randomUUID(),
       name: params.name || 'LATAM Airlines',
-      iataCode: params.iataCode || 'LA',
+      iata_code: params.iata_code || 'LA',
       createdAt: params.createdAt || new Date(),
       updatedAt: params.updatedAt || new Date(),
       deletedAt: params.deletedAt || null,
@@ -31,7 +31,7 @@ describe('Airline Entity', () => {
       const airline = createAirline({
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'TAM Airlines',
-        iataCode: 'TA',
+        iata_code: 'TA',
       });
 
       expect(airline).toBeInstanceOf(Airline);

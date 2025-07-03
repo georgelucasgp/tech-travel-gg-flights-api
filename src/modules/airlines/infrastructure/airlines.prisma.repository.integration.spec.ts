@@ -33,7 +33,7 @@ describe('AirlinesPrismaRepository (Integration)', () => {
 
   const getValidAirlineProps = (prefix = 'GG') => ({
     name: `${prefix} Airlines`,
-    iataCode: `${prefix}`,
+    iata_code: `${prefix}`,
   });
 
   describe('create()', () => {
@@ -89,7 +89,7 @@ describe('AirlinesPrismaRepository (Integration)', () => {
       const updatedAirlineEntity = AirlineFactory.create({
         id: airlineEntity.id.getValue(),
         name: 'GG Airlines Group',
-        iataCode: airlineEntity.iataCode.getValue(),
+        iata_code: airlineEntity.iataCode.getValue(),
         createdAt: airlineEntity.createdAt,
         updatedAt: new Date(),
         deletedAt: airlineEntity.deletedAt,
@@ -117,7 +117,7 @@ describe('AirlinesPrismaRepository (Integration)', () => {
       const updatedAirlineEntity = AirlineFactory.create({
         id: airlineEntity.id.getValue(),
         name: airlineEntity.name.getValue(),
-        iataCode: 'JJ',
+        iata_code: 'JJ',
         createdAt: airlineEntity.createdAt,
         updatedAt: new Date(),
         deletedAt: airlineEntity.deletedAt,

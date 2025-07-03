@@ -20,12 +20,12 @@ export class AirlinesService {
 
   async create(createAirlineDto: CreateAirlineDto): Promise<Airline> {
     const existingAirline = await this.airlineRepository.findByIataCode(
-      createAirlineDto.iataCode,
+      createAirlineDto.iata_code,
     );
 
     if (existingAirline) {
       throw new ConflictException(
-        `Airline with IATA code ${createAirlineDto.iataCode} already exists`,
+        `Airline with IATA code ${createAirlineDto.iata_code} already exists`,
       );
     }
 
@@ -53,14 +53,14 @@ export class AirlinesService {
   ): Promise<Airline> {
     const airline = await this.findOne(id);
 
-    if (updateAirlineDto.iataCode) {
+    if (updateAirlineDto.iata_code) {
       const existingAirline = await this.airlineRepository.findByIataCode(
-        updateAirlineDto.iataCode,
+        updateAirlineDto.iata_code,
       );
 
       if (existingAirline && !existingAirline.id.equals(airline.id)) {
         throw new ConflictException(
-          `Another airline with IATA code ${updateAirlineDto.iataCode} already exists`,
+          `Another airline with IATA code ${updateAirlineDto.iata_code} already exists`,
         );
       }
     }
@@ -70,8 +70,8 @@ export class AirlinesService {
       name: updateAirlineDto.name
         ? new AirlineName(updateAirlineDto.name)
         : airline.name,
-      iataCode: updateAirlineDto.iataCode
-        ? new AirlineIataCode(updateAirlineDto.iataCode)
+      iataCode: updateAirlineDto.iata_code
+        ? new AirlineIataCode(updateAirlineDto.iata_code)
         : airline.iataCode,
       createdAt: airline.createdAt,
       updatedAt: new Date(),

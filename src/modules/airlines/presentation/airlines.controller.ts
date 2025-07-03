@@ -39,7 +39,10 @@ export class AirlinesController {
   async create(
     @Body() createAirlineDto: CreateAirlineDto,
   ): Promise<AirlineResponseDto> {
-    const airline = await this.airlinesService.create(createAirlineDto);
+    const airline = await this.airlinesService.create({
+      name: createAirlineDto.name,
+      iata_code: createAirlineDto.iata_code,
+    });
     return new AirlineResponseDto(airline);
   }
 
