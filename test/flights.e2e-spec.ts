@@ -10,6 +10,8 @@ import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/shared/infrastructure/database/prisma.service';
 import { IntegrationTestHelper } from './helpers/integration-test.helper';
 import { HttpExceptionFilter } from '../src/shared/infrastructure/filters/http-exception.filter';
+import { UpdateFlightDto } from 'src/modules/flights/presentation/dto/update-flight.dto';
+import { CreateFlightDto } from 'src/modules/flights/presentation/dto/create-flight.dto';
 
 describe('FlightsController (e2e)', () => {
   let app: INestApplication;
@@ -59,13 +61,13 @@ describe('FlightsController (e2e)', () => {
     await app.close();
   });
 
-  const getValidCreateFlightDto = () => ({
-    flightNumber: 'LA3456',
-    airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-    originIata: 'IMP',
-    destinationIata: 'BSB',
-    departureDatetime: '2025-08-15T22:00:00.000Z',
-    arrivalDatetime: '2025-08-16T00:30:00.000Z',
+  const getValidCreateFlightDto = (): CreateFlightDto => ({
+    flight_number: 'LA3456',
+    airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+    origin_iata: 'IMP',
+    destination_iata: 'BSB',
+    departure_datetime: new Date('2025-08-15T22:00:00.000Z'),
+    arrival_datetime: new Date('2025-08-16T00:30:00.000Z'),
     frequency: [1, 3, 5],
   });
 
@@ -80,22 +82,22 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: expect.any(String) as string,
-        flightNumber: 'LA3456',
-        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-        originIata: 'IMP',
-        destinationIata: 'BSB',
+        flight_number: 'LA3456',
+        airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+        origin_iata: 'IMP',
+        destination_iata: 'BSB',
         frequency: [1, 3, 5],
       });
-      expect(response.body.departureDatetime).toBe('2025-08-15T22:00:00.000Z');
-      expect(response.body.arrivalDatetime).toBe('2025-08-16T00:30:00.000Z');
+      expect(response.body.departure_datetime).toBe('2025-08-15T22:00:00.000Z');
+      expect(response.body.arrival_datetime).toBe('2025-08-16T00:30:00.000Z');
       expect(response.body.frequency).toEqual([1, 3, 5]);
     });
 
     it('should validate IATA codes are uppercase', async () => {
       const createFlightDto = {
         ...getValidCreateFlightDto(),
-        originIata: 'IMP',
-        destinationIata: 'BSB',
+        origin_iata: 'IMP',
+        destination_iata: 'BSB',
       };
 
       const response = await request(app.getHttpServer())
@@ -103,14 +105,14 @@ describe('FlightsController (e2e)', () => {
         .send(createFlightDto)
         .expect(201);
 
-      expect(response.body.originIata).toBe('IMP');
-      expect(response.body.destinationIata).toBe('BSB');
+      expect(response.body.origin_iata).toBe('IMP');
+      expect(response.body.destination_iata).toBe('BSB');
     });
 
     it('should reject invalid IATA codes', async () => {
-      const createFlightDto = {
+      const createFlightDto: CreateFlightDto = {
         ...getValidCreateFlightDto(),
-        originIata: 'INVALID',
+        origin_iata: 'INVALID',
       };
 
       await request(app.getHttpServer())
@@ -120,10 +122,10 @@ describe('FlightsController (e2e)', () => {
     });
 
     it('should reject when arrival is before departure', async () => {
-      const createFlightDto = {
+      const createFlightDto: CreateFlightDto = {
         ...getValidCreateFlightDto(),
-        departureDatetime: '2025-08-16T00:30:00.000Z',
-        arrivalDatetime: '2025-08-15T22:00:00.000Z',
+        departure_datetime: new Date('2025-08-16T00:30:00.000Z'),
+        arrival_datetime: new Date('2025-08-15T22:00:00.000Z'),
       };
 
       await request(app.getHttpServer())
@@ -133,7 +135,7 @@ describe('FlightsController (e2e)', () => {
     });
 
     it('should reject invalid frequency values', async () => {
-      const createFlightDto = {
+      const createFlightDto: CreateFlightDto = {
         ...getValidCreateFlightDto(),
         frequency: [1, 8],
       };
@@ -148,11 +150,11 @@ describe('FlightsController (e2e)', () => {
   describe('GET /api/v1/flights', () => {
     beforeEach(async () => {
       const flight1 = getValidCreateFlightDto();
-      const flight2 = {
+      const flight2: CreateFlightDto = {
         ...getValidCreateFlightDto(),
-        flightNumber: 'LA7890',
-        originIata: 'BSB',
-        destinationIata: 'CGH',
+        flight_number: 'LA7890',
+        origin_iata: 'BSB',
+        destination_iata: 'CGH',
       };
 
       await request(app.getHttpServer()).post('/api/v1/flights').send(flight1);
@@ -167,9 +169,9 @@ describe('FlightsController (e2e)', () => {
       expect(response.body).toHaveLength(2);
       expect(response.body[0]).toMatchObject({
         id: expect.any(String),
-        flightNumber: expect.any(String),
-        originIata: expect.any(String),
-        destinationIata: expect.any(String),
+        flight_number: expect.any(String),
+        origin_iata: expect.any(String),
+        destination_iata: expect.any(String),
       });
     });
 
@@ -179,7 +181,7 @@ describe('FlightsController (e2e)', () => {
         .expect(200);
 
       expect(response.body).toHaveLength(1);
-      expect(response.body[0].originIata).toBe('IMP');
+      expect(response.body[0].origin_iata).toBe('IMP');
     });
 
     it('should filter by destination', async () => {
@@ -188,7 +190,7 @@ describe('FlightsController (e2e)', () => {
         .expect(200);
 
       expect(response.body).toHaveLength(1);
-      expect(response.body[0].destinationIata).toBe('BSB');
+      expect(response.body[0].destination_iata).toBe('BSB');
     });
 
     it('should filter by airline code', async () => {
@@ -205,8 +207,8 @@ describe('FlightsController (e2e)', () => {
         .expect(200);
 
       expect(response.body).toHaveLength(1);
-      expect(response.body[0].originIata).toBe('BSB');
-      expect(response.body[0].destinationIata).toBe('CGH');
+      expect(response.body[0].origin_iata).toBe('BSB');
+      expect(response.body[0].destination_iata).toBe('CGH');
     });
   });
 
@@ -227,9 +229,9 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        flightNumber: 'LA3456',
-        originIata: 'IMP',
-        destinationIata: 'BSB',
+        flight_number: 'LA3456',
+        origin_iata: 'IMP',
+        destination_iata: 'BSB',
       });
     });
 
@@ -260,13 +262,13 @@ describe('FlightsController (e2e)', () => {
     });
 
     it('should update all fields successfully', async () => {
-      const updateDto = {
-        flightNumber: 'LA9999',
-        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-        originIata: 'BSB',
-        destinationIata: 'CGH',
-        departureDatetime: '2025-09-01T14:00:00.000Z',
-        arrivalDatetime: '2025-09-01T16:00:00.000Z',
+      const updateDto: UpdateFlightDto = {
+        flight_number: 'LA9999',
+        airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+        origin_iata: 'BSB',
+        destination_iata: 'CGH',
+        departure_datetime: new Date('2025-09-01T14:00:00.000Z'),
+        arrival_datetime: new Date('2025-09-01T16:00:00.000Z'),
         frequency: [0, 6],
       };
 
@@ -277,18 +279,18 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        flightNumber: 'LA9999',
-        originIata: 'BSB',
-        destinationIata: 'CGH',
+        flight_number: 'LA9999',
+        origin_iata: 'BSB',
+        destination_iata: 'CGH',
         frequency: [0, 6],
       });
-      expect(response.body.departureDatetime).toBe('2025-09-01T14:00:00.000Z');
-      expect(response.body.arrivalDatetime).toBe('2025-09-01T16:00:00.000Z');
+      expect(response.body.departure_datetime).toBe('2025-09-01T14:00:00.000Z');
+      expect(response.body.arrival_datetime).toBe('2025-09-01T16:00:00.000Z');
     });
 
     it('should update only flight number', async () => {
       const updateDto = {
-        flightNumber: 'LA8888',
+        flight_number: 'LA8888',
       };
 
       const response = await request(app.getHttpServer())
@@ -298,17 +300,17 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        flightNumber: 'LA8888',
-        originIata: originalFlight.originIata,
-        destinationIata: originalFlight.destinationIata,
+        flight_number: 'LA8888',
+        origin_iata: originalFlight.origin_iata,
+        destination_iata: originalFlight.destination_iata,
         frequency: originalFlight.frequency,
       });
     });
 
     it('should update only route (origin and destination)', async () => {
       const updateDto = {
-        originIata: 'CGH',
-        destinationIata: 'BSB',
+        origin_iata: 'CGH',
+        destination_iata: 'BSB',
       };
 
       const response = await request(app.getHttpServer())
@@ -318,9 +320,9 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        originIata: 'CGH',
-        destinationIata: 'BSB',
-        flightNumber: originalFlight.flightNumber,
+        origin_iata: 'CGH',
+        destination_iata: 'BSB',
+        flight_number: originalFlight.flight_number,
         frequency: originalFlight.frequency,
       });
     });
@@ -338,16 +340,16 @@ describe('FlightsController (e2e)', () => {
       expect(response.body).toMatchObject({
         id: flightId,
         frequency: [1, 2, 3, 4, 5],
-        flightNumber: originalFlight.flightNumber,
-        originIata: originalFlight.originIata,
-        destinationIata: originalFlight.destinationIata,
+        flight_number: originalFlight.flight_number,
+        origin_iata: originalFlight.origin_iata,
+        destination_iata: originalFlight.destination_iata,
       });
     });
 
     it('should update only schedule (departure and arrival times)', async () => {
       const updateDto = {
-        departureDatetime: '2025-10-01T08:00:00.000Z',
-        arrivalDatetime: '2025-10-01T10:00:00.000Z',
+        departure_datetime: new Date('2025-10-01T08:00:00.000Z'),
+        arrival_datetime: new Date('2025-10-01T10:00:00.000Z'),
       };
 
       const response = await request(app.getHttpServer())
@@ -355,19 +357,19 @@ describe('FlightsController (e2e)', () => {
         .send(updateDto)
         .expect(200);
 
-      expect(response.body.departureDatetime).toBe('2025-10-01T08:00:00.000Z');
-      expect(response.body.arrivalDatetime).toBe('2025-10-01T10:00:00.000Z');
+      expect(response.body.departure_datetime).toBe('2025-10-01T08:00:00.000Z');
+      expect(response.body.arrival_datetime).toBe('2025-10-01T10:00:00.000Z');
 
-      expect(response.body.flightNumber).toBe(originalFlight.flightNumber);
-      expect(response.body.originIata).toBe(originalFlight.originIata);
-      expect(response.body.destinationIata).toBe(
-        originalFlight.destinationIata,
+      expect(response.body.flight_number).toBe(originalFlight.flight_number);
+      expect(response.body.origin_iata).toBe(originalFlight.origin_iata);
+      expect(response.body.destination_iata).toBe(
+        originalFlight.destination_iata,
       );
     });
 
     it('should update only airline', async () => {
       const updateDto = {
-        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+        airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
       };
 
       const response = await request(app.getHttpServer())
@@ -377,17 +379,17 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-        flightNumber: originalFlight.flightNumber,
-        originIata: originalFlight.originIata,
-        destinationIata: originalFlight.destinationIata,
+        airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+        flight_number: originalFlight.flight_number,
+        origin_iata: originalFlight.origin_iata,
+        destination_iata: originalFlight.destination_iata,
         frequency: originalFlight.frequency,
       });
     });
 
     it('should return 404 when trying to update non-existent flight', async () => {
       const nonExistentId = randomUUID();
-      const updateDto = { flightNumber: 'LA9999' };
+      const updateDto = { flight_number: 'LA9999' };
 
       await request(app.getHttpServer())
         .put(`/api/v1/flights/${nonExistentId}`)
@@ -396,7 +398,7 @@ describe('FlightsController (e2e)', () => {
     });
 
     it('should return 400 for invalid UUID', async () => {
-      const updateDto = { flightNumber: 'LA9999' };
+      const updateDto = { flight_number: 'LA9999' };
 
       await request(app.getHttpServer())
         .put('/api/v1/flights/invalid-uuid')
@@ -406,7 +408,7 @@ describe('FlightsController (e2e)', () => {
 
     it('should reject invalid IATA codes', async () => {
       const updateDto = {
-        originIata: 'INVALID',
+        origin_iata: 'INVALID',
       };
 
       await request(app.getHttpServer())
@@ -428,8 +430,8 @@ describe('FlightsController (e2e)', () => {
 
     it('should reject when arrival is before departure in update', async () => {
       const updateDto = {
-        departureDatetime: '2025-10-01T16:00:00.000Z',
-        arrivalDatetime: '2025-10-01T14:00:00.000Z',
+        departure_datetime: new Date('2025-10-01T16:00:00.000Z'),
+        arrival_datetime: new Date('2025-10-01T14:00:00.000Z'),
       };
 
       await request(app.getHttpServer())
@@ -448,9 +450,9 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        flightNumber: originalFlight.flightNumber,
-        originIata: originalFlight.originIata,
-        destinationIata: originalFlight.destinationIata,
+        flight_number: originalFlight.flight_number,
+        origin_iata: originalFlight.origin_iata,
+        destination_iata: originalFlight.destination_iata,
         frequency: originalFlight.frequency,
       });
     });
@@ -461,7 +463,7 @@ describe('FlightsController (e2e)', () => {
         .expect(200);
 
       const updateDto = {
-        originIata: 'CGH',
+        origin_iata: 'CGH',
       };
 
       const response = await request(app.getHttpServer())
@@ -471,14 +473,14 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        originIata: 'CGH',
-        destinationIata: originalFlight.body.destinationIata,
+        origin_iata: 'CGH',
+        destination_iata: originalFlight.body.destination_iata,
       });
     });
 
     it('should handle partial schedule update (only departure)', async () => {
       const updateDto = {
-        departureDatetime: '2025-10-01T08:00:00.000Z',
+        departure_datetime: new Date('2025-10-01T08:00:00.000Z'),
       };
 
       await request(app.getHttpServer())
