@@ -47,6 +47,11 @@ async function bootstrap() {
     .setDescription('API for managing flights, itineraries, and bookings')
     .setVersion('1.0')
     .addTag('Flights')
+    .addTag('Itineraries')
+    .addTag('Bookings')
+    .addTag('Availability')
+    .addTag('Airlines')
+    .addTag('Airports')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

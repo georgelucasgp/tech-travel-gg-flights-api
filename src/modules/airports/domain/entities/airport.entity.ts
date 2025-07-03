@@ -82,6 +82,35 @@ export class Airport {
     return this._deletedAt;
   }
 
+  changeName(newName: AirportName): void {
+    this._name = newName;
+    this.updateTimestamp();
+  }
+
+  changeIataCode(newIataCode: AirportIataCode): void {
+    this._iataCode = newIataCode;
+    this.updateTimestamp();
+  }
+
+  changeCity(newCity: AirportCity): void {
+    this._city = newCity;
+    this.updateTimestamp();
+  }
+
+  changeCountry(newCountry: AirportCountry): void {
+    this._country = newCountry;
+    this.updateTimestamp();
+  }
+
+  changeTimezone(newTimezone: AirportTimezone): void {
+    this._timezone = newTimezone;
+    this.updateTimestamp();
+  }
+
+  private updateTimestamp(): void {
+    this._updatedAt = new Date();
+  }
+
   equals(other: Airport): boolean {
     return this._id.equals(other._id);
   }
