@@ -6,7 +6,6 @@ export class MaxStops {
   }
 
   private validate(value?: number): number {
-    // Se não especificado, permite qualquer número de paradas
     if (value === undefined || value === null) {
       return Infinity;
     }
