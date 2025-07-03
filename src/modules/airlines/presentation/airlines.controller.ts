@@ -30,9 +30,9 @@ export class AirlinesController {
       example: {
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'GG Airlines',
-        iataCode: 'GG',
-        createdAt: '2025-01-07T10:00:00Z',
-        updatedAt: '2025-01-07T10:00:00Z',
+        iata_code: 'GG',
+        created_at: '2025-01-07T10:00:00Z',
+        updated_at: '2025-01-07T10:00:00Z',
       },
     },
   })

@@ -30,12 +30,12 @@ export class AirportsController {
       example: {
         id: '123e4567-e89b-12d3-a456-426614174000',
         name: 'Aeroporto Internacional de Brasília',
-        iataCode: 'BSB',
+        iata_code: 'BSB',
         city: 'Brasília',
         country: 'Brazil',
         timezone: 'America/Sao_Paulo',
-        createdAt: '2025-01-07T10:00:00Z',
-        updatedAt: '2025-01-07T10:00:00Z',
+        created_at: '2025-01-07T10:00:00Z',
+        updated_at: '2025-01-07T10:00:00Z',
       },
     },
   })

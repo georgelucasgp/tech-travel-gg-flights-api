@@ -3,17 +3,17 @@ import { Airline } from '../../domain/entities/airline.entity';
 export class AirlineResponseDto {
   id: string;
   name: string;
-  iataCode: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  iata_code: string;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at: Date | null;
 
   constructor(airline: Airline) {
     this.id = airline.id.getValue();
     this.name = airline.name.getValue();
-    this.iataCode = airline.iataCode.getValue();
-    this.createdAt = airline.createdAt;
-    this.updatedAt = airline.updatedAt;
-    this.deletedAt = airline.deletedAt;
+    this.iata_code = airline.iataCode.getValue();
+    this.created_at = airline.createdAt;
+    this.updated_at = airline.updatedAt;
+    this.deleted_at = airline.deletedAt;
   }
 }
