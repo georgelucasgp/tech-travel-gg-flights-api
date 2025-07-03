@@ -58,7 +58,6 @@ describe('Itinerary Entity', () => {
       flights: params.flights || [createFlightOne()],
       createdAt: params.createdAt || new Date(),
       updatedAt: params.updatedAt || new Date(),
-      deletedAt: params.deletedAt || null,
     });
   };
 
@@ -204,21 +203,6 @@ describe('Itinerary Entity', () => {
       );
       expect(singleFlightItinerary.stops).toBe(0);
       expect(twoFlightItinerary.stops).toBe(1);
-    });
-  });
-
-  describe('Soft Delete', () => {
-    it('should mark itinerary as deleted', () => {
-      const flight = createFlightOne();
-      const itinerary = Itinerary.create(
-        createItinerary({ flights: [flight] }),
-      );
-      expect(itinerary.isDeleted()).toBe(false);
-      expect(itinerary.deletedAt).toBeNull();
-      itinerary.markAsDeleted();
-      expect(itinerary.isDeleted()).toBe(true);
-      expect(itinerary.deletedAt).toBeInstanceOf(Date);
-      expect(itinerary.updatedAt).toBeInstanceOf(Date);
     });
   });
 });

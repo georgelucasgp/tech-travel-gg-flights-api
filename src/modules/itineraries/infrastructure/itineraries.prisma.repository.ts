@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/infrastructure/database/prisma.service';
 import { IItineraryRepository } from '../domain/repositories/itinerary.repository';
 import { Itinerary } from '../domain/entities/itinerary.entity';
@@ -30,9 +30,6 @@ export class ItinerariesPrismaRepository implements IItineraryRepository {
 
   async findAll(): Promise<Itinerary[]> {
     const itineraries = await this.prisma.itinerary.findMany({
-      where: {
-        deletedAt: null,
-      },
       include: {
         flights: {
           include: {
@@ -44,7 +41,6 @@ export class ItinerariesPrismaRepository implements IItineraryRepository {
         },
       },
     });
-
     return itineraries.map((itinerary) => ItineraryMapper.toDomain(itinerary));
   }
 
@@ -52,7 +48,6 @@ export class ItinerariesPrismaRepository implements IItineraryRepository {
     const itinerary = await this.prisma.itinerary.findFirst({
       where: {
         id,
-        deletedAt: null,
       },
       include: {
         flights: {
@@ -70,22 +65,8 @@ export class ItinerariesPrismaRepository implements IItineraryRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const existingItinerary = await this.prisma.itinerary.findFirst({
-      where: {
-        id,
-        deletedAt: null,
-      },
-    });
-
-    if (!existingItinerary) {
-      throw new NotFoundException('Itinerary not found');
-    }
-
-    await this.prisma.itinerary.update({
+    await this.prisma.itinerary.delete({
       where: { id },
-      data: {
-        deletedAt: new Date(),
-      },
     });
   }
 }

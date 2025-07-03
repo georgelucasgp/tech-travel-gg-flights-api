@@ -1,13 +1,13 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Post,
   ParseUUIDPipe,
+  Delete,
 } from '@nestjs/common';
 import { ItinerariesService } from '../application/itineraries.service';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
@@ -83,10 +83,9 @@ export class ItinerariesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete an itinerary' })
+  @ApiOperation({ summary: 'Delete an itinerary by ID' })
   @ApiResponse({ status: 204, description: 'Itinerary deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Itinerary not found' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.itinerariesService.delete(id);
   }
 }

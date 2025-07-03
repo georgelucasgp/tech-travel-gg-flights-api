@@ -24,7 +24,6 @@ export class ItineraryMapper {
       flights: domainFlights,
       createdAt: prismaItinerary.createdAt,
       updatedAt: prismaItinerary.updatedAt,
-      deletedAt: prismaItinerary.deletedAt,
     });
   }
 
@@ -33,7 +32,6 @@ export class ItineraryMapper {
       id: itinerary.id.getValue(),
       createdAt: itinerary.createdAt,
       updatedAt: itinerary.updatedAt,
-      deletedAt: itinerary.deletedAt,
       flights: {
         create: itinerary.flights.map((flight, index) => ({
           flight: {

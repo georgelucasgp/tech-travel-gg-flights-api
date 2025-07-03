@@ -7,7 +7,6 @@ export interface ItineraryProps {
   flights: Flight[];
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date | null;
 }
 
 export class Itinerary {
@@ -16,7 +15,6 @@ export class Itinerary {
     private readonly _flights: Flight[],
     private readonly _createdAt: Date,
     private _updatedAt: Date,
-    private _deletedAt: Date | null,
   ) {}
 
   static create(props: ItineraryProps): Itinerary {
@@ -27,7 +25,6 @@ export class Itinerary {
       props.flights,
       props.createdAt,
       props.updatedAt,
-      props.deletedAt,
     );
   }
 
@@ -92,11 +89,6 @@ export class Itinerary {
     }
   }
 
-  markAsDeleted(): void {
-    this._deletedAt = new Date();
-    this.updateTimestamp();
-  }
-
   private updateTimestamp(): void {
     this._updatedAt = new Date();
   }
@@ -115,10 +107,6 @@ export class Itinerary {
 
   get updatedAt(): Date {
     return this._updatedAt;
-  }
-
-  get deletedAt(): Date | null {
-    return this._deletedAt;
   }
 
   get originIata(): string {
@@ -151,10 +139,6 @@ export class Itinerary {
 
   get stops(): number {
     return Math.max(0, this._flights.length - 1);
-  }
-
-  isDeleted(): boolean {
-    return this._deletedAt !== null;
   }
 
   equals(other: Itinerary): boolean {

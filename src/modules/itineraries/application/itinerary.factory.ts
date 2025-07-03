@@ -18,7 +18,6 @@ export class ItineraryFactory {
       flights: props.flights,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
-      deletedAt: props.deletedAt ?? null,
     });
   }
 }

@@ -12,7 +12,6 @@ import {
   ItineraryFactory,
   ItineraryFactoryProps,
 } from '../application/itinerary.factory';
-import { NotFoundException } from '@nestjs/common';
 
 describe('ItinerariesPrismaRepository (Integration)', () => {
   let repository: ItinerariesPrismaRepository;
@@ -229,25 +228,6 @@ describe('ItinerariesPrismaRepository (Integration)', () => {
       });
 
       expect(deletedItinerary?.deletedAt).not.toBeNull();
-    });
-
-    it('should throw NotFoundException if itinerary does not exist', async () => {
-      const nonExistentId = randomUUID();
-
-      await expect(repository.delete(nonExistentId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should throw NotFoundException if itinerary is already deleted', async () => {
-      const validItineraryProps = await getValidItineraryProps();
-      const itinerary = ItineraryFactory.create(validItineraryProps);
-      await repository.create(itinerary);
-      await repository.delete(itinerary.id.getValue());
-
-      await expect(repository.delete(itinerary.id.getValue())).rejects.toThrow(
-        NotFoundException,
-      );
     });
   });
 });
