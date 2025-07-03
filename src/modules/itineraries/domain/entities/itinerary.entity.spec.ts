@@ -16,14 +16,14 @@ describe('Itinerary Entity', () => {
     params: Partial<FlightFactoryProps> = {},
   ): Flight => {
     return FlightFactory.create({
-      flightNumber: params.flightNumber || 'LA3456',
-      airlineId: params.airlineId || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-      originIata: params.originIata || 'BSB',
-      destinationIata: params.destinationIata || 'CGH',
-      departureDatetime:
-        params.departureDatetime || new Date('2025-07-01T09:30:00Z'),
-      arrivalDatetime:
-        params.arrivalDatetime || new Date('2025-07-01T10:30:00Z'),
+      flight_number: params.flight_number || 'LA3456',
+      airline_id: params.airline_id || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+      origin_iata: params.origin_iata || 'BSB',
+      destination_iata: params.destination_iata || 'CGH',
+      departure_datetime:
+        params.departure_datetime || new Date('2025-07-01T09:30:00Z'),
+      arrival_datetime:
+        params.arrival_datetime || new Date('2025-07-01T10:30:00Z'),
       frequency: params.frequency || [1, 2, 3, 4, 5],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -35,14 +35,14 @@ describe('Itinerary Entity', () => {
     params: Partial<FlightFactoryProps> = {},
   ): Flight => {
     return FlightFactory.create({
-      flightNumber: params.flightNumber || 'LA7890',
-      airlineId: params.airlineId || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-      originIata: params.originIata || 'CGH',
-      destinationIata: params.destinationIata || 'GIG',
-      departureDatetime:
-        params.departureDatetime || new Date('2025-07-01T11:15:00Z'),
-      arrivalDatetime:
-        params.arrivalDatetime || new Date('2025-07-01T12:05:00Z'),
+      flight_number: params.flight_number || 'LA7890',
+      airline_id: params.airline_id || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+      origin_iata: params.origin_iata || 'CGH',
+      destination_iata: params.destination_iata || 'GIG',
+      departure_datetime:
+        params.departure_datetime || new Date('2025-07-01T11:15:00Z'),
+      arrival_datetime:
+        params.arrival_datetime || new Date('2025-07-01T12:05:00Z'),
       frequency: params.frequency || [1, 2, 3, 4, 5],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -94,7 +94,7 @@ describe('Itinerary Entity', () => {
   describe('Route Sequence Validation', () => {
     it('should throw error when route sequence is broken', () => {
       const flight1 = createFlightOne();
-      const flight2 = createFlightTwo({ originIata: 'GRU' });
+      const flight2 = createFlightTwo({ origin_iata: 'GRU' });
       expect(() =>
         Itinerary.create(createItinerary({ flights: [flight1, flight2] })),
       ).toThrow(
@@ -107,8 +107,8 @@ describe('Itinerary Entity', () => {
     it('should throw error when next flight departs before current flight arrives', () => {
       const flight1 = createFlightOne();
       const flight2 = createFlightTwo({
-        departureDatetime: new Date('2025-07-01T10:00:00Z'),
-        arrivalDatetime: new Date('2025-07-01T10:30:00Z'),
+        departure_datetime: new Date('2025-07-01T10:00:00Z'),
+        arrival_datetime: new Date('2025-07-01T10:30:00Z'),
       });
       expect(() =>
         Itinerary.create(createItinerary({ flights: [flight1, flight2] })),
@@ -120,7 +120,7 @@ describe('Itinerary Entity', () => {
     it('should throw error when next flight departs exactly when current flight arrives', () => {
       const flight1 = createFlightOne();
       const flight2 = createFlightTwo({
-        departureDatetime: new Date('2025-07-01T10:30:00Z'),
+        departure_datetime: new Date('2025-07-01T10:30:00Z'),
       });
       expect(() =>
         Itinerary.create(createItinerary({ flights: [flight1, flight2] })),
@@ -132,8 +132,8 @@ describe('Itinerary Entity', () => {
     it('should throw error when connection time is less than 45 minutes', () => {
       const flight1 = createFlightOne();
       const flight2 = createFlightTwo({
-        departureDatetime: new Date('2025-07-01T10:50:00Z'),
-        arrivalDatetime: new Date('2025-07-01T12:00:00Z'),
+        departure_datetime: new Date('2025-07-01T10:50:00Z'),
+        arrival_datetime: new Date('2025-07-01T12:00:00Z'),
       });
       expect(() =>
         Itinerary.create(createItinerary({ flights: [flight1, flight2] })),

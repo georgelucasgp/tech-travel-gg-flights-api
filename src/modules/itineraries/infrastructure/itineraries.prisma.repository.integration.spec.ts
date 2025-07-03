@@ -42,12 +42,12 @@ describe('ItinerariesPrismaRepository (Integration)', () => {
   });
 
   const getValidFlightProps = (): FlightFactoryProps => ({
-    flightNumber: 'LA3456',
-    airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-    originIata: 'BSB',
-    destinationIata: 'CGH',
-    departureDatetime: new Date('2025-07-01T09:30:00Z'),
-    arrivalDatetime: new Date('2025-07-01T10:30:00Z'),
+    flight_number: 'LA3456',
+    airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+    origin_iata: 'BSB',
+    destination_iata: 'CGH',
+    departure_datetime: new Date('2025-07-01T09:30:00Z'),
+    arrival_datetime: new Date('2025-07-01T10:30:00Z'),
     frequency: [1, 3, 5],
   });
 
@@ -112,12 +112,12 @@ describe('ItinerariesPrismaRepository (Integration)', () => {
     it('should create itinerary with multiple flights', async () => {
       const flight1 = await createTestFlight();
       const flight2Props: FlightFactoryProps = {
-        flightNumber: 'LA7890',
-        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
-        originIata: 'CGH',
-        destinationIata: 'IMP',
-        departureDatetime: new Date('2025-07-01T11:15:00Z'),
-        arrivalDatetime: new Date('2025-07-01T12:05:00Z'),
+        flight_number: 'LA7890',
+        airline_id: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
+        origin_iata: 'CGH',
+        destination_iata: 'IMP',
+        departure_datetime: new Date('2025-07-01T11:15:00Z'),
+        arrival_datetime: new Date('2025-07-01T12:05:00Z'),
         frequency: [1, 3, 5],
       };
       const flight2 = FlightFactory.create(flight2Props);

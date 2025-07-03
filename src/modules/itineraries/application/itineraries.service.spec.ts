@@ -20,23 +20,23 @@ describe('ItinerariesService', () => {
 
   const mockFlightOne = FlightFactory.create({
     id: flightOneId,
-    flightNumber: 'LA3456',
-    airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-    originIata: 'IMP',
-    destinationIata: 'BSB',
-    departureDatetime: new Date('2025-07-01T09:30:00Z'),
-    arrivalDatetime: new Date('2025-07-01T10:30:00Z'),
+    flight_number: 'LA3456',
+    airline_id: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+    origin_iata: 'IMP',
+    destination_iata: 'BSB',
+    departure_datetime: new Date('2025-07-01T09:30:00Z'),
+    arrival_datetime: new Date('2025-07-01T10:30:00Z'),
     frequency: [1, 2, 3, 4, 5],
   });
 
   const mockFlightTwo = FlightFactory.create({
     id: flightTwoId,
-    flightNumber: 'LA7890',
-    airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-    originIata: 'BSB',
-    destinationIata: 'GRU',
-    departureDatetime: new Date('2025-07-01T11:15:00Z'),
-    arrivalDatetime: new Date('2025-07-01T12:05:00Z'),
+    flight_number: 'LA7890',
+    airline_id: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+    origin_iata: 'BSB',
+    destination_iata: 'GRU',
+    departure_datetime: new Date('2025-07-01T11:15:00Z'),
+    arrival_datetime: new Date('2025-07-01T12:05:00Z'),
     frequency: [1, 2, 3, 4, 5],
   });
 
@@ -130,12 +130,12 @@ describe('ItinerariesService', () => {
     it('should throw BadRequestException when itinerary validation fails', async () => {
       const invalidFlight = FlightFactory.create({
         id: flightTwoId,
-        flightNumber: 'LA7890',
-        airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
-        originIata: 'IMP',
-        destinationIata: 'GRU',
-        departureDatetime: new Date('2025-07-01T11:15:00Z'),
-        arrivalDatetime: new Date('2025-07-01T12:05:00Z'),
+        flight_number: 'LA7890',
+        airline_id: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
+        origin_iata: 'IMP',
+        destination_iata: 'GRU',
+        departure_datetime: new Date('2025-07-01T11:15:00Z'),
+        arrival_datetime: new Date('2025-07-01T12:05:00Z'),
         frequency: [1, 2, 3, 4, 5],
       });
 
