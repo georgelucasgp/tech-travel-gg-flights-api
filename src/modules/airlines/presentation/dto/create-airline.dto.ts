@@ -12,14 +12,14 @@ export class CreateAirlineDto {
   name: string;
 
   @ApiProperty({
-    description: 'IATA code of the airline (2 uppercase letters)',
-    example: 'LA',
+    description: 'IATA code of the airline (2 uppercase letters or digits)',
+    example: 'G3',
   })
   @IsString()
   @IsNotEmpty()
   @Length(2, 2)
-  @Matches(/^[A-Z]{2}$/, {
-    message: 'IATA code must be exactly 2 uppercase letters',
+  @Matches(/^[A-Z0-9]{2}$/, {
+    message: 'IATA code must be exactly 2 uppercase letters or digits',
   })
   iata_code: string;
 }

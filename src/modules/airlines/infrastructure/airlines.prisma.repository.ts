@@ -26,6 +26,8 @@ export class AirlinesPrismaRepository implements IAirlineRepository {
       },
     });
 
+    console.log(airlines);
+
     return airlines.map((airline) => AirlineMapper.toDomain(airline));
   }
 
