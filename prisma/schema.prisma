@@ -19,7 +19,6 @@ model Airline {
   id        String    @id @default(uuid())
   name      String    @db.VarChar(255)
   iataCode  String    @unique @map("iata_code") @db.VarChar(3)
-  icaoCode  String    @unique @map("icao_code") @db.VarChar(3)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -27,7 +26,6 @@ model Airline {
   flights Flight[]
 
   @@index([iataCode])
-  @@index([icaoCode])
   @@map("airlines")
 }
 
@@ -35,7 +33,6 @@ model Airport {
   id        String    @id @default(uuid())
   name      String    @db.VarChar(255)
   iataCode  String    @unique @map("iata_code") @db.VarChar(3)
-  icaoCode  String    @unique @map("icao_code") @db.VarChar(4)
   city      String    @db.VarChar(100)
   country   String    @db.VarChar(100)
   timezone  String?   @db.VarChar(50)
@@ -47,7 +44,6 @@ model Airport {
   destinationFlights Flight[] @relation("DestinationAirport")
 
   @@index([iataCode])
-  @@index([icaoCode])
   @@index([city])
   @@index([country])
   @@map("airports")
