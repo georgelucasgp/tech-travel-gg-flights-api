@@ -35,7 +35,7 @@ model Airport {
   iataCode  String    @unique @map("iata_code") @db.VarChar(3)
   city      String    @db.VarChar(100)
   country   String    @db.VarChar(100)
-  timezone  String?   @db.VarChar(50)
+  timezone  String   @db.VarChar(50)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
