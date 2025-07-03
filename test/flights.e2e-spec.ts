@@ -46,7 +46,7 @@ describe('FlightsController (e2e)', () => {
     await app.init();
 
     prisma = moduleFixture.get<PrismaService>(PrismaService);
-    helper = new IntegrationTestHelper(prisma);
+    helper = IntegrationTestHelper.getInstance(prisma);
     await helper.setup();
   });
 
@@ -61,7 +61,7 @@ describe('FlightsController (e2e)', () => {
 
   const getValidCreateFlightDto = () => ({
     flightNumber: 'LA3456',
-    airlineId: helper.getTestAirlineId(),
+    airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
     originIata: 'IMP',
     destinationIata: 'BSB',
     departureDatetime: '2025-08-15T22:00:00.000Z',
@@ -81,7 +81,7 @@ describe('FlightsController (e2e)', () => {
       expect(response.body).toMatchObject({
         id: expect.any(String) as string,
         flightNumber: 'LA3456',
-        airlineId: helper.getTestAirlineId(),
+        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
         originIata: 'IMP',
         destinationIata: 'BSB',
         frequency: [1, 3, 5],
@@ -262,7 +262,7 @@ describe('FlightsController (e2e)', () => {
     it('should update all fields successfully', async () => {
       const updateDto = {
         flightNumber: 'LA9999',
-        airlineId: helper.getTestAirlineId(),
+        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
         originIata: 'BSB',
         destinationIata: 'CGH',
         departureDatetime: '2025-09-01T14:00:00.000Z',
@@ -367,7 +367,7 @@ describe('FlightsController (e2e)', () => {
 
     it('should update only airline', async () => {
       const updateDto = {
-        airlineId: helper.getTestAirlineId(),
+        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
       };
 
       const response = await request(app.getHttpServer())
@@ -377,7 +377,7 @@ describe('FlightsController (e2e)', () => {
 
       expect(response.body).toMatchObject({
         id: flightId,
-        airlineId: helper.getTestAirlineId(),
+        airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
         flightNumber: originalFlight.flightNumber,
         originIata: originalFlight.originIata,
         destinationIata: originalFlight.destinationIata,

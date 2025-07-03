@@ -11,7 +11,7 @@ describe('Flight Entity', () => {
     return FlightFactory.create({
       id: params.id || randomUUID(),
       flightNumber: params.flightNumber || 'LA3456',
-      airlineId: params.airlineId || 'airline-1',
+      airlineId: params.airlineId || '301cc2b2-f6d2-461f-a284-bf58f00286d3',
       originIata: params.originIata || 'BSB',
       destinationIata: params.destinationIata || 'CGH',
       departureDatetime:

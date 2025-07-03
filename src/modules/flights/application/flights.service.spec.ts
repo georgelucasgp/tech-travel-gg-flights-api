@@ -175,7 +175,7 @@ describe('FlightsService', () => {
 
       const updateDto: UpdateFlightDto = {
         flightNumber: 'LA4000',
-        airlineId: 'new-airline-id',
+        airlineId: '301cc2b2-f6d2-461f-a284-bf58f00286d3',
         originIata: 'GRU',
         destinationIata: 'CGH',
         departureDatetime: new Date('2025-11-01T14:00:00Z'),

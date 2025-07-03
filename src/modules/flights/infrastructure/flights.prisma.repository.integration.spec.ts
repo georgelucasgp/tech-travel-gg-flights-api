@@ -22,7 +22,7 @@ describe('FlightsPrismaRepository (Integration)', () => {
 
     repository = module.get<FlightsPrismaRepository>(FlightsPrismaRepository);
     prisma = module.get<PrismaService>(PrismaService);
-    helper = new IntegrationTestHelper(prisma);
+    helper = IntegrationTestHelper.getInstance(prisma);
 
     await helper.setup();
   });
@@ -37,7 +37,7 @@ describe('FlightsPrismaRepository (Integration)', () => {
 
   const getValidFlightProps = () => ({
     flightNumber: 'LA3456',
-    airlineId: helper.getTestAirlineId(),
+    airlineId: 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a',
     originIata: 'IMP',
     destinationIata: 'BSB',
     departureDatetime: new Date('2025-08-15T22:00:00Z'),
@@ -209,7 +209,7 @@ describe('FlightsPrismaRepository (Integration)', () => {
     });
 
     it('should update airline successfully', async () => {
-      const newAirlineId = helper.getTestAirlineId();
+      const newAirlineId = 'e6a7c3b8-3b1a-4b9b-8e5e-6d0a7c4b3a2a';
 
       flightEntity.changeAirline(newAirlineId);
 
