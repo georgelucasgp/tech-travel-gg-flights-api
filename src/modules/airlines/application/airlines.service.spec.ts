@@ -137,13 +137,13 @@ describe('AirlinesService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findById', () => {
     it('should return airline when found', async () => {
       const findByIdSpy = jest
         .spyOn(mockRepository, 'findById')
         .mockResolvedValue(mockAirline);
 
-      const result = await service.findOne(airlineId);
+      const result = await service.findById(airlineId);
 
       expect(findByIdSpy).toHaveBeenCalledTimes(1);
       expect(findByIdSpy).toHaveBeenCalledWith(airlineId);
@@ -153,7 +153,7 @@ describe('AirlinesService', () => {
     it('should throw NotFoundException when airline not found', async () => {
       jest.spyOn(mockRepository, 'findById').mockResolvedValue(null);
 
-      await expect(service.findOne(airlineId)).rejects.toThrow(
+      await expect(service.findById(airlineId)).rejects.toThrow(
         new NotFoundException(`Airline with ID ${airlineId} not found`),
       );
     });
@@ -162,7 +162,7 @@ describe('AirlinesService', () => {
       const error = new Error('Database error');
       jest.spyOn(mockRepository, 'findById').mockRejectedValue(error);
 
-      await expect(service.findOne(airlineId)).rejects.toThrow(
+      await expect(service.findById(airlineId)).rejects.toThrow(
         'Database error',
       );
     });

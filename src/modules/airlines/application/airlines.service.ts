@@ -26,7 +26,7 @@ export class AirlinesService {
     if (existingAirline) {
       if (existingAirline.deletedAt) {
         throw new ConflictException(
-          `Airline with IATA code ${createAirlineDto.iata_code} is inactive. Use recovery endpoint to reactivate it.`,
+          `Airline with IATA code ${createAirlineDto.iata_code} already exists but is deleted. Use recovery endpoint to reactivate it.`,
         );
       }
 
@@ -43,7 +43,7 @@ export class AirlinesService {
     return await this.airlineRepository.findAll(showDeleted);
   }
 
-  async findOne(id: string): Promise<Airline> {
+  async findById(id: string): Promise<Airline> {
     const airline = await this.airlineRepository.findById(id);
 
     if (!airline) {
@@ -63,7 +63,7 @@ export class AirlinesService {
     id: string,
     updateAirlineDto: UpdateAirlineDto,
   ): Promise<Airline> {
-    const airline = await this.findOne(id);
+    const airline = await this.findById(id);
 
     if (updateAirlineDto.iata_code) {
       const existingAirline = await this.airlineRepository.findByIataCode(
@@ -100,7 +100,7 @@ export class AirlinesService {
   }
 
   async remove(id: string): Promise<void> {
-    await this.findOne(id);
+    await this.findById(id);
 
     await this.airlineRepository.delete(id);
   }

@@ -8,12 +8,14 @@ export class AirlineResponseDto {
   updated_at: Date;
   deleted_at: Date | null;
 
-  constructor(airline: Airline) {
-    this.id = airline.id.getValue();
-    this.name = airline.name.getValue();
-    this.iata_code = airline.iataCode.getValue();
-    this.created_at = airline.createdAt;
-    this.updated_at = airline.updatedAt;
-    this.deleted_at = airline.deletedAt;
+  static fromEntity(airline: Airline): AirlineResponseDto {
+    return {
+      id: airline.id.getValue(),
+      name: airline.name.getValue(),
+      iata_code: airline.iataCode.getValue(),
+      created_at: airline.createdAt,
+      updated_at: airline.updatedAt,
+      deleted_at: airline.deletedAt,
+    };
   }
 }
