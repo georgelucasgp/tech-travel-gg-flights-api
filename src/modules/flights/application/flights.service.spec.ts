@@ -95,7 +95,7 @@ describe('FlightsService', () => {
       const createSpy = jest.spyOn(mockRepository, 'create');
 
       await expect(service.create(mockFlightData)).rejects.toThrow(
-        'Flight already exists',
+        'Flight LA3000 already exists',
       );
       expect(createSpy).not.toHaveBeenCalled();
     });

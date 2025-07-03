@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Param,
   ParseUUIDPipe,
   Post,
@@ -12,7 +11,7 @@ import {
 import { BookingsService } from '../application/bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { BookingResponseDto } from './dto/booking-response.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Bookings')
 @Controller({ path: 'bookings', version: '1' })
@@ -30,22 +29,38 @@ export class BookingsController {
         code: 'ABC123',
         user_id: 'user-abc-123',
         status: 'PENDING',
-        created_at: '2025-07-01T10:00:00Z',
-        updated_at: '2025-07-01T10:00:00Z',
+        created_at: '2025-07-01T10:00:00.000Z',
+        updated_at: '2025-07-01T10:00:00.000Z',
         itinerary: {
           id: '150',
           origin_iata: 'BSB',
           destination_iata: 'GIG',
-          departure_datetime: '2025-07-01T09:30:00Z',
-          arrival_datetime: '2025-07-01T12:05:00Z',
+          departure_datetime: '2025-07-01T09:30:00.000Z',
+          arrival_datetime: '2025-07-01T12:05:00.000Z',
           total_duration_minutes: 155,
           stops: 1,
-          flights: [],
+          flights: [
+            {
+              id: '10',
+              flight_number: 'LA3456',
+              origin_iata: 'BSB',
+              destination_iata: 'CGH',
+              departure_datetime: '2025-07-01T09:30:00.000Z',
+              arrival_datetime: '2025-07-01T10:30:00.000Z',
+            },
+            {
+              id: '25',
+              flight_number: 'LA7890',
+              origin_iata: 'CGH',
+              destination_iata: 'GIG',
+              departure_datetime: '2025-07-01T11:15:00.000Z',
+              arrival_datetime: '2025-07-01T12:05:00.000Z',
+            },
+          ],
         },
       },
     },
   })
-  @ApiResponse({ status: 400, description: 'Invalid itinerary ID' })
   async create(
     @Body() createBookingDto: CreateBookingDto,
   ): Promise<BookingResponseDto> {
@@ -58,23 +73,17 @@ export class BookingsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a booking' })
-  @ApiResponse({ status: 204, description: 'Booking deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Booking not found' })
-  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    await this.bookingsService.delete(id);
-  }
-
-  @Get('users/:userId')
-  @ApiOperation({ summary: 'Get all bookings for a specific user' })
-  @ApiResponse({
-    status: 200,
-    description: 'User bookings retrieved successfully',
+  @ApiOperation({ summary: 'Cancel a booking' })
+  @ApiParam({
+    name: 'id',
+    description: 'Booking UUID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  async findByUserId(
-    @Param('userId') userId: string,
-  ): Promise<BookingResponseDto[]> {
-    const bookings = await this.bookingsService.findByUserId(userId);
-    return bookings.map((booking) => BookingResponseDto.fromEntity(booking));
+  @ApiResponse({
+    status: 204,
+    description: 'Booking cancelled successfully',
+  })
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.bookingsService.delete(id);
   }
 }

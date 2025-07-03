@@ -8,18 +8,21 @@ import {
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 const IATA_CODE_REGEX = /^[A-Z]{3}$/;
-const AIRLINE_IATA_CODE_REGEX = /^[A-Z]{2}$/;
+const AIRLINE_IATA_CODE_REGEX = /^[A-Z0-9]{2}$/;
 
 export class FlightQueryDto {
   @ApiPropertyOptional({
-    description: 'Filtra voos pelo código IATA da companhia aérea (ex: LA)',
-    example: 'LA',
+    description:
+      'Filtra voos pelo código IATA da companhia aérea (ex: LA, G3, 2Z)',
+    example: 'G3',
   })
   @IsOptional()
   @IsString()
   @Length(2, 2)
-  @Matches(AIRLINE_IATA_CODE_REGEX)
-  airlineCode?: string;
+  @Matches(AIRLINE_IATA_CODE_REGEX, {
+    message: 'IATA code must be exactly 2 uppercase letters or digits',
+  })
+  airline_code?: string;
 
   @ApiPropertyOptional({
     description:

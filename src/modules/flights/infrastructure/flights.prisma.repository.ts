@@ -28,9 +28,9 @@ export class FlightsPrismaRepository implements IFlightRepository {
       ...(showDeleted ? {} : { deletedAt: null }),
       ...(query?.origin && { originIata: query.origin }),
       ...(query?.destination && { destinationIata: query.destination }),
-      ...(query?.airlineCode && {
+      ...(query?.airline_code && {
         airline: {
-          iataCode: query.airlineCode,
+          iataCode: query.airline_code,
           ...(showDeleted ? {} : { deletedAt: null }),
         },
       }),

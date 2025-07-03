@@ -56,7 +56,7 @@ export class FlightsController {
     schema: {
       example: {
         statusCode: 400,
-        message: 'Flight already exists',
+        message: 'Flight LA3456 already exists',
         error: 'Bad Request',
       },
     },

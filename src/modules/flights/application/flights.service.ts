@@ -33,7 +33,9 @@ export class FlightsService {
       createDto.flight_number,
     );
     if (existingFlight) {
-      throw new BadRequestException('Flight already exists');
+      throw new BadRequestException(
+        `Flight ${createDto.flight_number} already exists`,
+      );
     }
 
     const flight = FlightFactory.create({

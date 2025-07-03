@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, Logger, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './shared/infrastructure/filters/http-exception.filter';
+import { PrismaExceptionFilter } from './shared/infrastructure/filters/prisma-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -35,6 +36,7 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new PrismaExceptionFilter());
 
   app.enableCors({
     origin:
