@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { AvailabilityService } from './availability.service';
 import { IAvailabilityRepository } from '../domain/repositories/availability.repository';
 import { AvailabilitySearchDto } from '../presentation/dto/availability-search.dto';
+import { ItinerariesService } from 'src/modules/itineraries/application/itineraries.service';
 
 describe('AvailabilityService', () => {
   let service: AvailabilityService;
@@ -15,12 +16,20 @@ describe('AvailabilityService', () => {
       hasValidConnectionTime: jest.fn(),
     });
 
+    const mockItinerariesService: jest.Mocked<Partial<ItinerariesService>> = {
+      findByCriteria: jest.fn().mockResolvedValue([]),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AvailabilityService,
         {
           provide: 'IAvailabilityRepository',
           useFactory: repositoryFactory,
+        },
+        {
+          provide: ItinerariesService,
+          useValue: mockItinerariesService,
         },
       ],
     }).compile();

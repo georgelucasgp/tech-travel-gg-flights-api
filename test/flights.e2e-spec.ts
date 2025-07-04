@@ -526,9 +526,11 @@ describe('FlightsController (e2e)', () => {
         .delete(`/api/v1/flights/${flightId}`)
         .expect(204);
 
-      await request(app.getHttpServer())
+      const response = await request(app.getHttpServer())
         .get(`/api/v1/flights/${flightId}`)
-        .expect(404);
+        .expect(200);
+
+      expect(response.body.deleted_at).not.toBeNull();
     });
   });
 });

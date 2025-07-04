@@ -78,11 +78,13 @@ describe('UsersPrismaRepository (Integration)', () => {
       const user2 = UserFactory.create(
         getValidUserProps(undefined, 'User2', 'user2@example.com'),
       );
+
       await repository.create(user1);
       await repository.create(user2);
       const users = await repository.findAll();
       expect(users.length).toBe(2);
       const emails = users.map((u) => u.email.getValue());
+
       expect(emails).toContain('user1@example.com');
       expect(emails).toContain('user2@example.com');
     });
@@ -102,12 +104,15 @@ describe('UsersPrismaRepository (Integration)', () => {
         updatedAt: new Date(),
         deletedAt: null,
       });
+
       const result = await repository.update(updatedUser);
       expect(result.name.getValue()).toBe('Charlie Updated');
       expect(result.email.getValue()).toBe('charlie.updated@example.com');
+
       const savedUser = await prisma.user.findUnique({
         where: { id: createdUser.id.getValue() },
       });
+
       expect(savedUser?.name).toBe('Charlie Updated');
       expect(savedUser?.email).toBe('charlie.updated@example.com');
     });
@@ -120,12 +125,14 @@ describe('UsersPrismaRepository (Integration)', () => {
       );
       const createdUser = await repository.create(userEntity);
       await repository.delete(createdUser.id.getValue());
+
+      const found = await repository.findById(createdUser.id.getValue());
+      expect(found).not.toBeNull();
+      expect(found?.deletedAt).not.toBeNull();
       const deletedUser = await prisma.user.findUnique({
         where: { id: createdUser.id.getValue() },
       });
       expect(deletedUser?.deletedAt).not.toBeNull();
-      const found = await repository.findById(createdUser.id.getValue());
-      expect(found).toBeNull();
     });
   });
 
@@ -137,11 +144,14 @@ describe('UsersPrismaRepository (Integration)', () => {
       const createdUser = await repository.create(userEntity);
       await repository.delete(createdUser.id.getValue());
       const recovered = await repository.recovery(createdUser.id.getValue());
+
       expect(recovered).toBeInstanceOf(User);
       expect(recovered.deletedAt).toBeNull();
+
       const savedUser = await prisma.user.findUnique({
         where: { id: createdUser.id.getValue() },
       });
+
       expect(savedUser?.deletedAt).toBeNull();
     });
   });
