@@ -1,4 +1,4 @@
-import { Airline as PrismaAirline } from 'generated/prisma/client';
+import type { Airline as PrismaAirline } from '@prisma/client';
 import { Airline } from '../domain/entities/airline.entity';
 import {
   AirlineId,

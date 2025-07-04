@@ -1,4 +1,3 @@
-import { Prisma } from '../../../../generated/prisma/client';
 import {
   ConflictException,
   NotFoundException,
@@ -6,6 +5,7 @@ import {
   InternalServerErrorException,
   HttpException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 export class PrismaUtils {
   static getHttpExceptionFromPrismaError(error: any): HttpException {

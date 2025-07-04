@@ -4,7 +4,7 @@ import { IFlightRepository } from '../domain/repositories/flight.repository';
 import { Flight } from '../domain/entities/flight.entity';
 import { FlightMapper } from './flight.mapper';
 import { FlightQueryDto } from '../presentation/dto/flight-query.dto';
-import { Prisma } from 'generated/prisma/client';
+import type { Prisma } from '@prisma/client';
 
 @Injectable()
 export class FlightsPrismaRepository implements IFlightRepository {

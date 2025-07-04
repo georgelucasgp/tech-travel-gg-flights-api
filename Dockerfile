@@ -34,7 +34,6 @@ COPY prisma ./prisma/
 RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/generated ./generated
 
 RUN pnpm run db:generate
 
@@ -43,4 +42,4 @@ USER nestjs
 
 EXPOSE 3000
 
-CMD ["pnpm", "run", "start:dev"]
+CMD ["node", "dist/src/main.js"]

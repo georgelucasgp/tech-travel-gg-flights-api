@@ -1,8 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
-import { Prisma } from '../../../../generated/prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { PrismaUtils } from '../database/prisma.utils';
+import { Prisma } from '@prisma/client';
 
 interface ErrorResponse {
   statusCode: number;

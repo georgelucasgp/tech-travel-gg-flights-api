@@ -1,4 +1,4 @@
-import { Airport as PrismaAirport } from 'generated/prisma/client';
+import type { Airport as PrismaAirport } from '@prisma/client';
 import { Airport } from '../domain/entities/airport.entity';
 import {
   AirportId,

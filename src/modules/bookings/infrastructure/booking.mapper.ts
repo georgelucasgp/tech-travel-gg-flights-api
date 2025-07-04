@@ -1,9 +1,9 @@
-import {
+import type {
   Booking as PrismaBooking,
   Itinerary as PrismaItinerary,
   ItineraryFlight as PrismaItineraryFlight,
   Flight as PrismaFlight,
-} from '../../../../generated/prisma/client';
+} from '@prisma/client';
 import { Booking } from '../domain/entities/booking.entity';
 import { BookingFactory } from '../application/booking.factory';
 import { ItineraryMapper } from '../../itineraries/infrastructure/itinerary.mapper';

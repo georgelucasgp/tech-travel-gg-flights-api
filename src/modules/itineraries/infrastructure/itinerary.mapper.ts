@@ -1,11 +1,11 @@
 import { Itinerary } from '../domain/entities/itinerary.entity';
 import { ItineraryId } from '../domain/value-objects';
 import { FlightMapper } from '../../flights/infrastructure/flight.mapper';
-import {
+import type {
   Itinerary as PrismaItinerary,
   ItineraryFlight as PrismaItineraryFlight,
   Flight as PrismaFlight,
-} from 'generated/prisma/client';
+} from '@prisma/client';
 
 type PrismaItineraryWithFlights = PrismaItinerary & {
   flights: (PrismaItineraryFlight & {
