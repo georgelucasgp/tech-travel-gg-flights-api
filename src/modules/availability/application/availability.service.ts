@@ -6,12 +6,15 @@ import {
 } from '../presentation/dto/availability-response.dto';
 import { IAvailabilityRepository } from '../domain/repositories/availability.repository';
 import { Flight } from '../../flights/domain/entities/flight.entity';
+import { ItinerariesService } from '../../itineraries/application/itineraries.service';
+import { Itinerary } from '../../itineraries/domain/entities/itinerary.entity';
 
 @Injectable()
 export class AvailabilityService {
   constructor(
     @Inject('IAvailabilityRepository')
     private readonly availabilityRepository: IAvailabilityRepository,
+    private readonly itinerariesService: ItinerariesService,
   ) {}
 
   async search(
@@ -64,26 +67,40 @@ export class AvailabilityService {
   ): Promise<AvailabilityItineraryDto[]> {
     const results: AvailabilityItineraryDto[] = [];
 
-    const directFlights =
-      await this.availabilityRepository.findAvailableFlights({
-        origin,
-        destination,
-        date,
-        airline_codes: preferredAirlines,
-      });
+    const existingItineraries = await this.itinerariesService.findByCriteria({
+      origin,
+      destination,
+      date,
+      airline_codes: preferredAirlines,
+      max_stops: maxStops,
+    });
 
-    for (const flight of directFlights) {
-      results.push(this.createItineraryFromFlight(flight));
+    for (const itinerary of existingItineraries) {
+      results.push(this.createItineraryDtoFromEntity(itinerary));
     }
 
-    if (!maxStops || maxStops > 0) {
-      const connectionItineraries = await this.findConnectionFlights(
-        origin,
-        destination,
-        date,
-        preferredAirlines,
-      );
-      results.push(...connectionItineraries);
+    if (results.length === 0) {
+      const directFlights =
+        await this.availabilityRepository.findAvailableFlights({
+          origin,
+          destination,
+          date,
+          airline_codes: preferredAirlines,
+        });
+
+      for (const flight of directFlights) {
+        results.push(this.createItineraryFromFlight(flight));
+      }
+
+      if (!maxStops || maxStops > 0) {
+        const connectionItineraries = await this.findConnectionFlights(
+          origin,
+          destination,
+          date,
+          preferredAirlines,
+        );
+        results.push(...connectionItineraries);
+      }
     }
 
     return results.sort(
@@ -91,6 +108,28 @@ export class AvailabilityService {
         new Date(a.departure_datetime).getTime() -
         new Date(b.departure_datetime).getTime(),
     );
+  }
+
+  private createItineraryDtoFromEntity(
+    itinerary: Itinerary,
+  ): AvailabilityItineraryDto {
+    return {
+      itinerary_id: itinerary.id.getValue(),
+      origin_iata: itinerary.originIata,
+      destination_iata: itinerary.destinationIata,
+      departure_datetime: itinerary.departureDateTime.toISOString(),
+      arrival_datetime: itinerary.arrivalDateTime.toISOString(),
+      total_duration_minutes: itinerary.totalDurationMinutes,
+      stops: itinerary.stops,
+      flights: itinerary.flights.map((flight) => ({
+        id: flight.id.getValue(),
+        flight_number: flight.flightNumber.getValue(),
+        origin_iata: flight.originIata.getValue(),
+        destination_iata: flight.destinationIata.getValue(),
+        departure_datetime: flight.departureDatetime.toISOString(),
+        arrival_datetime: flight.arrivalDatetime.toISOString(),
+      })),
+    };
   }
 
   private async findConnectionFlights(
