@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../shared/infrastructure/database/prisma.service';
 import { IAirportRepository } from '../domain/repositories/airport.repository';
 import { Airport } from '../domain/entities/airport.entity';
@@ -33,7 +37,6 @@ export class AirportsPrismaRepository implements IAirportRepository {
     const airport = await this.prisma.airport.findFirst({
       where: {
         id,
-        deletedAt: null,
       },
     });
 
@@ -76,15 +79,14 @@ export class AirportsPrismaRepository implements IAirportRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const existingAirport = await this.prisma.airport.findFirst({
-      where: {
-        id,
-        deletedAt: null,
-      },
-    });
+    const existingAirport = await this.findById(id);
 
     if (!existingAirport) {
       throw new NotFoundException('Airport not found');
+    }
+
+    if (existingAirport.deletedAt) {
+      throw new ConflictException(`Airport with ID ${id} is already deleted`);
     }
 
     await this.prisma.airport.update({
@@ -98,7 +100,7 @@ export class AirportsPrismaRepository implements IAirportRepository {
   async recovery(id: string): Promise<Airport> {
     const recovered = await this.prisma.airport.update({
       where: { id },
-      data: { deletedAt: null },
+      data: { deletedAt: null, updatedAt: new Date() },
     });
     return AirportMapper.toDomain(recovered);
   }

@@ -50,12 +50,6 @@ export class AirlinesService {
       throw new NotFoundException(`Airline with ID ${id} not found`);
     }
 
-    if (airline.deletedAt) {
-      throw new ConflictException(
-        `Airline with ID ${id} is inactive. Use recovery endpoint to reactivate it.`,
-      );
-    }
-
     return airline;
   }
 

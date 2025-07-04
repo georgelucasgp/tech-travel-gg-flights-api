@@ -56,12 +56,31 @@ export class FlightsService {
       throw new NotFoundException('Flight not found');
     }
 
-    if (updateDto.flight_number) {
-      flight.changeFlightNumber(new FlightNumber(updateDto.flight_number));
+    if (updateDto.airline_id) {
+      await this.ensureAirlineExists(updateDto.airline_id);
+      flight.changeAirline(updateDto.airline_id);
     }
 
-    if (updateDto.airline_id) {
-      flight.changeAirline(updateDto.airline_id);
+    if (updateDto.origin_iata) {
+      await this.ensureOriginAirportExists(updateDto.origin_iata);
+    }
+    if (updateDto.destination_iata) {
+      await this.ensureDestinationAirportExists(updateDto.destination_iata);
+    }
+
+    if (updateDto.flight_number) {
+      const existingFlight = await this.flightRepository.findByFlightNumber(
+        updateDto.flight_number,
+      );
+      if (
+        existingFlight &&
+        existingFlight.id.getValue() !== flight.id.getValue()
+      ) {
+        throw new BadRequestException(
+          `Flight ${updateDto.flight_number} already exists`,
+        );
+      }
+      flight.changeFlightNumber(new FlightNumber(updateDto.flight_number));
     }
 
     if (updateDto.origin_iata || updateDto.destination_iata) {
@@ -91,8 +110,8 @@ export class FlightsService {
     return await this.flightRepository.update(flight);
   }
 
-  findAll(query: FlightQueryDto, showDeleted = false): Promise<Flight[]> {
-    return this.flightRepository.findAll(query, showDeleted);
+  findAll(query: FlightQueryDto): Promise<Flight[]> {
+    return this.flightRepository.findAll(query);
   }
 
   async findById(id: string): Promise<Flight | null> {
@@ -116,6 +135,11 @@ export class FlightsService {
     if (!flight) {
       throw new NotFoundException('Flight not found');
     }
+
+    if (flight.deletedAt) {
+      throw new ConflictException(`Flight with ID ${id} is already deleted`);
+    }
+
     await this.flightRepository.delete(id);
   }
 

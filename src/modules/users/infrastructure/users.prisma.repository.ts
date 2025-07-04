@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../shared/infrastructure/database/prisma.service';
 import { IUserRepository } from '../domain/repositories/user.repository';
 import { User } from '../domain/entities/user.entity';
@@ -33,7 +37,6 @@ export class UsersPrismaRepository implements IUserRepository {
     const user = await this.prisma.user.findFirst({
       where: {
         id,
-        deletedAt: null,
       },
     });
 
@@ -76,15 +79,14 @@ export class UsersPrismaRepository implements IUserRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const existingUser = await this.prisma.user.findFirst({
-      where: {
-        id,
-        deletedAt: null,
-      },
-    });
+    const existingUser = await this.findById(id);
 
     if (!existingUser) {
       throw new NotFoundException('User not found');
+    }
+
+    if (existingUser.deletedAt) {
+      throw new ConflictException(`User with ID ${id} is already deleted`);
     }
 
     await this.prisma.user.update({

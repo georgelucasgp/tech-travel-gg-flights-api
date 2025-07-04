@@ -20,20 +20,18 @@ export class FlightsPrismaRepository implements IFlightRepository {
     return FlightMapper.toDomain(savedFlight);
   }
 
-  async findAll(
-    query?: FlightQueryDto,
-    showDeleted = false,
-  ): Promise<Flight[]> {
+  async findAll(query?: FlightQueryDto): Promise<Flight[]> {
     const where: Prisma.FlightFindManyArgs['where'] = {
-      ...(showDeleted ? {} : { deletedAt: null }),
+      ...(query?.deleted_at ? {} : { deletedAt: null }),
       ...(query?.origin && { originIata: query.origin }),
       ...(query?.destination && { destinationIata: query.destination }),
       ...(query?.airline_code && {
         airline: {
           iataCode: query.airline_code,
-          ...(showDeleted ? {} : { deletedAt: null }),
+          ...(query?.deleted_at ? {} : { deletedAt: null }),
         },
       }),
+      ...(query?.flight_number && { flightNumber: query.flight_number }),
     };
     const flights = await this.prisma.flight.findMany({
       where,
@@ -48,7 +46,6 @@ export class FlightsPrismaRepository implements IFlightRepository {
     const flight = await this.prisma.flight.findFirst({
       where: {
         id,
-        deletedAt: null,
       },
     });
 
@@ -111,7 +108,7 @@ export class FlightsPrismaRepository implements IFlightRepository {
   async recovery(id: string): Promise<Flight> {
     const recovered = await this.prisma.flight.update({
       where: { id },
-      data: { deletedAt: null },
+      data: { deletedAt: null, updatedAt: new Date() },
     });
     return FlightMapper.toDomain(recovered);
   }

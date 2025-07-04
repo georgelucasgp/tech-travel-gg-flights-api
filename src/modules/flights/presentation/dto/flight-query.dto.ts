@@ -47,6 +47,14 @@ export class FlightQueryDto {
   destination?: string;
 
   @ApiPropertyOptional({
+    description: 'Filtra voos pelo número do voo (ex: LA3456)',
+    example: 'LA3456',
+  })
+  @IsOptional()
+  @IsString()
+  flight_number?: string;
+
+  @ApiPropertyOptional({
     description:
       'If true, returns all records (including deleted ones). Default: false.',
   })
