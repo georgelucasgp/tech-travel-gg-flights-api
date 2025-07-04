@@ -5,7 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateItineraryDto } from '../presentation/dto/create-itinerary.dto';
-import { IItineraryRepository } from '../domain/repositories/itinerary.repository';
+import {
+  IItineraryRepository,
+  ItinerarySearchCriteria,
+} from '../domain/repositories/itinerary.repository';
 import { IFlightRepository } from '../../flights/domain/repositories/flight.repository';
 import { Itinerary } from '../domain/entities/itinerary.entity';
 import { ItineraryFactory } from './itinerary.factory';
@@ -53,6 +56,12 @@ export class ItinerariesService {
       throw new NotFoundException('Itinerary not found');
     }
     return itinerary;
+  }
+
+  async findByCriteria(
+    criteria: ItinerarySearchCriteria,
+  ): Promise<Itinerary[]> {
+    return await this.itineraryRepository.findByCriteria(criteria);
   }
 
   async delete(id: string): Promise<void> {
