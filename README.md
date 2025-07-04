@@ -72,7 +72,7 @@ src/modules/{bounded-context}/
 1. **Clone o repositório:**
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone [<URL_DO_REPOSITORIO>](https://github.com/georgelucasgp/tech-travel-gg-flights-api)
 cd flights
 ```
 
